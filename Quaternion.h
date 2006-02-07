@@ -14,11 +14,12 @@
 #include <vector>
 using namespace std;
 
-#include "Types.h"
+#include "Vector3D.h"
+// #include "Types.h"
 
-#ifndef ROTATIONMATRIX_H
-#include "RotationMatrix.h"
-#endif
+//#ifndef ROTATIONMATRIX_H
+//#include "RotationMatrix.h"
+//#endif
 
 /**
 * A quaternion used for representing rotations. Note that this class
@@ -30,50 +31,51 @@ class Quaternion
 {
 public:
 	Quaternion();
-	Quaternion( real m[3][3] );
-	Quaternion(real w, real x, real y, real z);
-	Quaternion(Vector3D<real> axis, real angle);
-	Quaternion(Vector3D<real> rotate, bool turnp = false);
-	Vector3D<real> RotateVector(bool turnp = false) const;
+	Quaternion(double m[3][3] );
+	Quaternion(double w, double x, double y, double z);
+	Quaternion(Vector3D<double> axis, double angle);
+	Quaternion(Vector3D<double> rotate, bool turnp = false);
+	Vector3D<double> RotateVector(bool turnp = false) const;
 
 	Quaternion& operator*=(const Quaternion& q);
 	Quaternion& operator+=(const Quaternion& q);
 	Quaternion& operator-=(const Quaternion& q);
-	Quaternion& operator*=(real s);
-	Quaternion& operator/=(real s);
+	Quaternion& operator*=(double s);
+	Quaternion& operator/=(double s);
 	Quaternion operator*(const Quaternion& a) const;
 
 	bool operator==(const Quaternion& q) const;
+    void CircularRotate(size_t i);
 	void Normalize();
 	void Canonicalize();
-	real DotProduct(const Quaternion& q) const;
+	double DotProduct(const Quaternion& q) const;
 	size_t FindClosest(const vector<Quaternion>& l) const;
 
-	real Magnitude() const;
+	double Magnitude() const;
 	Quaternion Conjugate() const;
-	Vector3D<real> transformPoint(const Vector3D<real>& pos) const;
+	Vector3D<double> transformPoint(const Vector3D<double>& pos) const;
 
-	RotationMatrix Matrix() const;
+  //	RotationMatrix Matrix() const;
 
 	/**
 	* get the w (real) component
 	************************************/
-	real w() const { return m_w; };
+	double w() const { return m_w; };
 
 	/**
 	* get the x (i) component
 	************************************/
-	real x() const { return m_x; };
+	double x() const { return m_x; };
 
 	/**
 	* get the y (j) component
 	************************************/
-	real y() const { return m_y; };
+	double y() const { return m_y; };
 
 	/**
 	* get the z (k) component
 	************************************/
-	real z() const { return m_z; };
+	double z() const { return m_z; };
 
 #if !defined(NDEBUG)
 	static void TurnToAngleTest();
@@ -81,17 +83,17 @@ public:
 
 private:
 
-	real   m_w, m_x, m_y, m_z;
-	static real AngleToTurn(real theta);
-	static real TurnToAngle(real turn);
+	double   m_w, m_x, m_y, m_z;
+	static double AngleToTurn(double theta);
+	static double TurnToAngle(double turn);
 
 };
 
 
 /**
-* Multiply a quaternion by a real
+* Multiply a quaternion by a double
 ********************************************************************************/
-inline Quaternion operator*(const Quaternion& a, real s)
+inline Quaternion operator*(const Quaternion& a, double s)
 {
 	Quaternion r = a;
 	return r *= s;
@@ -116,9 +118,9 @@ inline Quaternion operator-(const Quaternion& a, const Quaternion& b)
 };
 
 /**
-* Divide a quaternion by a real
+* Divide a quaternion by a double
 ********************************************************************************/
-inline Quaternion operator/(const Quaternion& q, real s)
+inline Quaternion operator/(const Quaternion& q, double s)
 {
 	Quaternion r = q;
 	return r /= s;
