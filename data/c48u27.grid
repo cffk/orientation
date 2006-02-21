@@ -1,0 +1,9 @@
+# Orientation set c48u27, number = 648, radius = 20.83 degrees
+# $Id: $
+# For more information, See http://charles.karney.info/orientation/
+format grid
+0.33582 0.00    648   27   4 20.83  1.64091
+ 0  0  0  1.127102  20.78   1
+ 1  1  1  1.035830  20.83   8
+ 2  0  0  0.904993  20.83   6
+ 2  2  0  1.013025  20.83  12

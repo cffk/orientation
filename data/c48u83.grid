@@ -1,0 +1,12 @@
+# Orientation set c48u83, number = 1992, radius = 16.29 degrees
+# $Id: $
+# For more information, See http://charles.karney.info/orientation/
+format grid
+0.25970 0.00   1992   83   7 16.29  2.42065
+ 0  0  0  1.665264  16.29   1
+ 1  1  1  1.517726  16.29   8
+ 2  0  0  1.489794  16.29   6
+ 2  2  0  1.205193  16.00  12
+ 2  2  2  1.146566  15.33   8
+ 3  1  1  0.973349  16.29  24
+ 3  3  1  0.552456  14.88  24

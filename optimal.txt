@@ -1,0 +1,145 @@
+Nearly optimal coverings of orientation space.
+
+Here we give various sets of orientations with cover orientation space
+nearly optimally.  These are suitable for searching orientation space
+and for integrating over orientation (together with the provided
+weights).
+
+Given a set of N orientations, we define its covering radius, alpha, as
+the maximum amount by which an arbitrary orientation needs to be rotated
+to align it with the closest member of the set.  The coverage, c, is
+defined as
+
+	N(alpha - sin alpha)
+    c = --------------------
+		pi
+
+A set of orientations is optimal if
+
+* there are no other sets with the same under of elements with a
+ smaller alpha (and c).
+
+* all sets with a smaller number of elements have a larger alpha.
+
+For any set of N orientations we can perform a Voronoi tesselatation of
+orientation space, associating with each member of the set, q_i, all
+orientations for which q_i is the closest orientation.  We define the
+relative weight of q_i as
+
+		 volume of Voronoi cell
+    w_i = N ---------------------------------
+	    total volume of orientation space
+
+We can approximate an orientational average of f(q) with
+
+    <f> = sum w_i f(q_i) / N
+
+Assuming that the variation in f is bounded, we expect that, for a given
+N, the error in this approximation to be minimized with an optimal set
+of orientations.
+
+Expressing the orientation as a unit quaternion or a pair of opposite
+points on S^3, we see that this problem is just a 4-dimensional
+generalization of the "Spherical Covering" problem.  See
+
+    R. H. Hardin, N. J. A. Sloane and W. D. Smith
+    Spherical Coverings
+    http://www.research.att.com/~njas/coverings/
+
+with the additional constraint that the points come as opposite pairs.
+The formula for c above involves the "area" of a spherical cap on S^3.
+
+We provide here "nearly" optimal sets of points.  Since our interest is
+primarily on being able to general "good" sets at several values of N,
+we generated most of these sets by placing a body-centered-cubic lattice
+within the cells of a truncated-cubic tetracontaoctachoron (48-cell).
+
+Here is the procedure.  Each cell of the 48-cell is a truncated cube.
+Define the primary cell as
+
+    p_0 = 1
+    p_{i>0} < sqrt(2) - 1
+    |p_1| + |p_2| + |p_2| < 1
+
+the other cells are generated from this by the application of the
+rotational symmetry group of the cube.
+
+Place a body-centered-cubic lattice, with lattice spacing delta, within
+the primary cell (including only points lies within the cell).  Thus we
+take
+
+   p_0 = 1
+   [p_1, p_2, p_3] = [i, j, k] * delta/2
+
+where [i, j, k] are either all even or all odd (to give a BCC lattice).
+These points are then normalized with q = p / |p| to place them on S^3.
+
+As delta is varied the number of points within the cell (N/24) varies.
+For a given N, pick the delta with the smallest covering.  (To obtain
+the sets given here, we systematicallly varied delta in steps of
+0.00001.)  Discard any N for which there is a smaller N with a smaller
+(or equal) alpha.
+
+There are many ways in which we might imagine improving these sets.
+Using a uniform lattice spacing sometimes improves the coverage (two
+examples are included here).  One might offset the lattice or perturb
+the points here the surface of the cells.  However because these
+strategies make the search for good sets considerably more complex, the
+simple procedure outlined above probably gives results which are "good
+enough".
+
+
+The format for each set is:
+
+1 line containing
+N alpha(degrees) c
+
+N lines containing (i = 1..N)
+q_0i q_1i q_2i q_3i w_i
+
+c600v		 vertices of 600-cell
+c600vc		 vertices and cells of 600-cell
+c600vec		 vertices, edges, and cells of 600-cell
+c48u1		 cell centers of 48-cell
+c48u9
+c48u27
+c48u83
+c48u157
+c48u181
+c48u309
+c48u519
+c48u527
+c48u815
+c48u1153
+c48u1201
+c48u1641
+c48u2219
+c48u2867
+c48u2947
+c48u3733
+c48u4701
+c48u4749
+c48u5879
+c48u7111
+c48u8649
+c48n309
+c48n527
+
+For each set, can obtain new sets by performing an arbitrary rotation of
+R^4 via
+
+    q'_i = r q_i s
+
+where r and s are fixed (possibly random) unit quaternions.  The pre-
+and post-multiplication allows all rotations of R^4 to be accessed; see
+
+    http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
+
+One way of estimating the error in the numerical quadrature is to repeat
+the calculation several times with the same set of points but choosing
+different random r and s each time.
+
+(Note that original sets possess symmetry that if q_i is a member of the
+set then so is the inverse rotation q_i*.  The new sets q'_i do not have
+this property, in general.)
+
