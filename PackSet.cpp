@@ -4,14 +4,16 @@
 #include <iomanip>
 //#include <cstdlib>
 
-void PackSet::Add(const Quaternion& q, unsigned char cat) {
+void PackSet::Add(const Quaternion& q, unsigned char cat, bool skipcheck) {
   Quaternion qq = m_pre;
   qq *= q;
   qq *= m_post;
   qq.Normalize();
+  qq.Canonicalize();
   // Eliminate duplicates and one of q/-q.
   size_t k = FindClosest(qq);
-  if (k == m_set.size() || Closeness(qq, m_set[k]) < 1 - 1.0e-7) {
+  if (k == m_set.size() || skipcheck
+      || Closeness(qq, m_set[k]) < 1 - 1.0e-9) {
     m_set.push_back(qq);
     m_cat.push_back(cat);
     m_maxcat = std::max(++cat, m_maxcat);
@@ -271,9 +273,9 @@ double PackSet::MaxRadius(const Quaternion& q, double d, size_t num) const {
       c = nc;
       j = nj;
     }
-    if (num % 10000 == 0) {
-      d *= 0.9;
-      if (num % 100000 == 0)
+    if (num % 100 == 0) {
+      d *= 0.95;
+      if (false && num % 100000 == 0)
 	cout << num << " " << setprecision(15) << Dist(c) << endl;
     }
   }
@@ -400,3 +402,101 @@ double PackSet::MinMaxRadius(size_t k, double eps) {
   }
   return sep;
 }
+
+double PackSet::Volume(size_t ind, double radius, size_t n,
+		       double& maxrad, const Quaternion& tx) {
+  PackSet temp;
+  temp.Add(Quaternion(1,0,0,0));
+  Quaternion q = Member(ind);
+  Quaternion qc = q.Conjugate();
+  for (size_t i = 0; i < Number(); ++i) {
+    if (i == ind)
+      continue;
+    if (Dist(Closeness(q, Member(i))) <= 2 * radius)
+      temp.Add(Member(i) * qc, 0, true);
+  }
+  // Integrate over sphere of radius radt by constructing cubical grid
+  // and count cubes.  V = int WithinCell(x) dV.  Better to integrate
+  // over the surface of the unit sphere and compute V = int l(Omega)^3
+  // dOmega/3 where l(Omega) is the extent of the Voronoi cell in
+  // direction Omega which can be found by the bisection method.
+#if 1
+  double radt = Quaternion::AngleToTurn(radius);
+  double vol = 0;
+  double maxturn = 0;
+  size_t ndiv = 4 + int(ceil(2*log(double(2*n))/log(2.0)));
+  for (size_t i = 0; i < n; ++i) {
+    double x = (2.0 * i + 1.0 - n)/ n;
+    for (size_t j = 0; j < n; ++j) {
+      double y = (2.0 * j + 1.0 - n)/ n;
+      for (size_t k = 0; k < 2; ++k) {
+	// z = +/- 1
+	double z = 2.0 * k - 1.0;
+	// Convert to unit vector
+	double s = sqrt(x*x + y*y + 1);
+	double x0 = x/s, y0 = y/s, z0 = z/s;
+	s = 1/(s*s*s);		// Metric factor for this element.
+	for (size_t m = 0; m < 3; ++m) {
+	  // Rotate through 3 axes
+	  {
+	    double t = x0;
+	    x0 = y0;
+	    y0 = z0;
+	    z0 = t;
+	  }
+	  Vector3D<double> v = tx.transformPoint(Vector3D<double>(x0, y0, z0));
+	  double g = 0.5, del = 0.25;
+	  for (size_t it = 0; it < ndiv; ++it) {
+	    Quaternion t(cbrt(g) * radt * v, true);
+	    // Quaternion t(g * radt * v, true);
+	    // If closest is nonzero move closer
+	    g += temp.FindClosest(t) ? -del : del;
+	    del /= 2.0;
+	  }
+	  maxturn = max(g, maxturn);
+	  vol += s * g;
+	  // vol += s * g * g * g;
+	}
+      }
+    }
+  }
+  // mult by area element and cone factor
+  vol *= 4.0*radt*radt*radt/(3.0*n*n);
+  // Correct for systematic discretization error.
+  vol /= 1 + 0.25/(n*n);
+  // Further possible correction:
+  // vol /= 1 - 1.0/(n*n*n);
+  maxrad = Quaternion::TurnToAngle(cbrt(maxturn)*radt);
+  return vol;
+#else
+  double radt = Quaternion::AngleToTurn(radius);
+  size_t count = 0;
+  double mincloseness = 2;
+  for (size_t i = 0; i < n; ++i) {
+    double x = (2.0 * i + 1.0 - n) * radt / n;
+    for (size_t j = 0; j < n; ++j) {
+      double y = (2.0 * j + 1.0 - n) * radt / n;
+      if (x * x + y * y > radt * radt)
+	continue;
+      for (size_t k = 0; k < n; ++k) {
+	double z = (2.0 * k + 1.0 - n) * radt / n;
+	if (x * x + y * y + z * z > radt * radt)
+	  continue;
+	Quaternion t(tx.transformPoint(Vector3D<double>(x, y, z)), true);
+	size_t q = temp.FindClosest(t);
+	if (q == 0) {
+	  count++;
+	  mincloseness = min(mincloseness, abs(t.w()));
+	}
+      }
+    }
+  }
+  radt *= 2.0/n;
+  maxrad = Dist(mincloseness);
+  //  cout << temp.Number() - 1 << " " << Dist(mincloseness)*180/M_PI << endl;
+  return count * radt * radt * radt;
+#endif
+}
+    
+  
+  

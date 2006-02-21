@@ -2,6 +2,7 @@
 #include "Random.hpp"
 #include <iostream>
 #include <cmath>
+#include <iomanip>
 
 using namespace std;
 
@@ -817,16 +818,497 @@ static size_t zcw[9][4] = {
   { 6044, 1865, 595, 1359 },
 };
 
-int main() {
+double pind(double ind, double delta) {
+  const double s = 1.86; // sqrt(3.0); // 1.86; //sqrt(3.5);
+  ind *= delta;
+  switch (2) {
+  case 0:
+    return sinh(s * ind)/s;
+    break;
+  case 1:
+    {
+      double x = sinh(s * ind)/s;
+      return 3 * x < 1 ? x : ind * (s/3.0)/asinh(s/3.0);
+    }
+    //    return tan(s * ind)/s;
+    break;
+  case 2:
+    {
+      double x = sinh(s * ind)/s;
+      return 3 * x < 1 ? x :
+	(1/3.0) + cosh(asinh(s/3.0)) * (ind - asinh(s/3)/s);
+    }
+    //    return tan(s * ind)/s;
+    break;
+  default:
+    return ind;
+  }
+}
+
+vector<Quaternion> CellSet(double delta) {
+  vector<Quaternion> set;
+  int n = 2*int(1/delta)+1;
+  int maxind = -1;
+  double maxslope = -100;
+  for (int x = -n; x <= n; ++x) {
+    double xf = pind(0.5*x, delta);
+    if (abs(xf) >= sqrt(2.0) - 1)
+      continue;
+    for (int y = -n; y <= n; ++y) {
+      if ((x&1) != (y&1))	// All even or all odd
+	continue;
+      double yf = pind(0.5*y, delta);
+      if (abs(yf) >= sqrt(2.0) - 1)
+	continue;
+      for (int z = -n; z <= n; ++z) {
+	if ((x&1) != (z&1))	// All even or all odd
+	  continue;
+	double zf = pind(0.5*z, delta);
+	if (abs(zf) >= sqrt(2.0) - 1)
+	  continue;
+	if (abs(xf) + abs(yf) + abs(zf) >= 1)
+	  continue;
+	double s = xf + yf + zf;
+	if (s > maxslope) {
+	  maxind = set.size();
+	  maxslope = s;
+	}
+	/*
+	if (1 && x >= 0 && y >= 0 && z >=0 && x >= y && y >= z)
+	  cout << setw(2) << x << " "
+	       << setw(2) << y << " "
+	       << setw(2) << z << endl;
+	*/
+	set.push_back(Quaternion(1.0, xf, yf, zf));
+      }
+    }
+  }
+  //  exit(0);
+  /*
+  cout << set[maxind].w() << " "
+       << set[maxind].x() << " "
+       << set[maxind].y() << " "
+       << set[maxind].z() << endl;
+  */
+  return set;
+}
+
+void AddCell(const vector<Quaternion>& set, const Quaternion& tx,
+	     double delta, PackSet& s, bool all) {
+  double t = 2 * delta;
+  for (size_t i = 0; i < set.size(); ++i) {
+    Quaternion q(set[i]);
+    q *= tx;
+    double x = q.x()/q.w(), y = q.y()/q.w(), z = q.z()/q.w();
+    if (all) {
+      s.Add(q, 0, true);
+      continue;
+    }
+    if (abs(x) > sqrt(2.0) - 1 + t ||
+	abs(y) > sqrt(2.0) - 1 + t ||
+	abs(z) > sqrt(2.0) - 1 + t ||
+	abs(x) + abs(y) + abs(z) > 1 + sqrt(3.0) * t)
+      continue;
+    if (abs(x) < t && abs(y) < t && abs(z) < t) {
+      s.Add(q, 0, true);
+      continue;
+    }
+    if (!(x > sqrt(2.0) - 1 - t ||
+	  y > sqrt(2.0) - 1 - t ||
+	  z > sqrt(2.0) - 1 - t ||
+	  x + y + z > 1 - sqrt(3.0) * t))
+      continue;
+    if (!(x > -t && y > -t && x > -t))
+      continue;
+    if (!(x > y - sqrt(2.0) * t && y > z - sqrt(2.0) * t))
+      continue;
+    s.Add(q, 0, true);
+  }
+}
+
+PackSet Cell48(double delta, size_t& num, bool all) {
+  vector<Quaternion> v(CellSet(delta));
+  PackSet s;
+
+  //  AddCell(v, Quaternion(1,  0, 	0,  0), delta, s, true);
+  AddCell(v, Quaternion(1,  0, 	0,  0), delta, s, all);
+  AddCell(v, Quaternion(0,  1, 	0,  0), delta, s, all);
+  AddCell(v, Quaternion(0,  0, 	1,  0), delta, s, all);
+  AddCell(v, Quaternion(0,  0, 	0,  1), delta, s, all);
+  AddCell(v, Quaternion(1,  1, 	1,  1), delta, s, all);
+  AddCell(v, Quaternion(1,  1, 	1, -1), delta, s, all);
+  AddCell(v, Quaternion(1,  1, -1,  1), delta, s, all);
+  AddCell(v, Quaternion(1,  1, -1, -1), delta, s, all);
+  AddCell(v, Quaternion(1, -1,  1,  1), delta, s, all);
+  AddCell(v, Quaternion(1, -1,  1, -1), delta, s, all);
+  AddCell(v, Quaternion(1, -1, -1,  1), delta, s, all);
+  AddCell(v, Quaternion(1, -1, -1, -1), delta, s, all);
+  AddCell(v, Quaternion(1,  1, 	0,  0), delta, s, all);
+  AddCell(v, Quaternion(1,  0, 	1,  0), delta, s, all);
+  AddCell(v, Quaternion(1,  0, 	0,  1), delta, s, all);
+  AddCell(v, Quaternion(0,  1, 	1,  0), delta, s, all);
+  AddCell(v, Quaternion(0,  1, 	0,  1), delta, s, all);
+  AddCell(v, Quaternion(0,  0, 	1,  1), delta, s, all);
+  AddCell(v, Quaternion(1, -1, 	0,  0), delta, s, all);
+  AddCell(v, Quaternion(1,  0, -1,  0), delta, s, all);
+  AddCell(v, Quaternion(1,  0,  0, -1), delta, s, all);
+  AddCell(v, Quaternion(0,  1, -1,  0), delta, s, all);
+  AddCell(v, Quaternion(0,  1,  0, -1), delta, s, all);
+  AddCell(v, Quaternion(0,  0,  1, -1), delta, s, all);
+  /*
+  AddCell(v, Quaternion(1, 0, 0, 0), delta, s, all);
+  AddCell(v, Quaternion(1, 1, 0, 0), delta, s, all);
+  AddCell(v, Quaternion(1,-1, 0, 0), delta, s, all);
+  AddCell(v, Quaternion(1, 0, 1, 0), delta, s, all);
+  AddCell(v, Quaternion(1, 0,-1, 0), delta, s, all);
+  AddCell(v, Quaternion(1, 0, 0, 1), delta, s, all);
+  AddCell(v, Quaternion(1, 0, 0,-1), delta, s, all);
+  AddCell(v, Quaternion(1, 1, 1, 1), delta, s, all);
+  AddCell(v, Quaternion(1, 1, 1,-1), delta, s, all);
+  AddCell(v, Quaternion(1, 1,-1, 1), delta, s, all);
+  AddCell(v, Quaternion(1, 1,-1,-1), delta, s, all);
+  AddCell(v, Quaternion(1,-1, 1, 1), delta, s, all);
+  AddCell(v, Quaternion(1,-1, 1,-1), delta, s, all);
+  AddCell(v, Quaternion(1,-1,-1, 1), delta, s, all);
+  AddCell(v, Quaternion(1,-1,-1,-1), delta, s, all);
+  */
+  num = 24 * v.size();
+  cout << "Delta " << delta
+       << " nums " << v.size() << " "
+       << s.Number() << " " << num << endl;
+  return s;
+}
+
+void VolCell48(double delta, double rad, size_t res) {
+  size_t num;
+  PackSet s(Cell48(delta, num, true));
+  /*
+  for (size_t i = 0; i < num; ++i) {
+    s.Member(i).Print(cout);
+    cout << endl;
+  }
+  exit(0);
+  */
+  num /= 24;
+  double uniform = 4.0 * M_PI/3.0 / (24 * num);
+  double vsum = 0;
+  for (size_t i = 0; i < num; ++i) {
+    Quaternion q(s.Member(i));
+    if (q.x() < 0 ||
+	q.y() < 0 ||
+	q.z() < 0 ||
+	q.x() < q.y() ||
+	q.y() < q.z() ||
+	// redundant
+	q.x() < q.z())
+      continue;
+    size_t mult = 1;
+    if (q.x() != 0) mult *= 2;
+    if (q.y() != 0) mult *= 2;
+    if (q.z() != 0) mult *= 2;
+    if (q.x() == q.y() && q.x() == q.z()) mult *= 1;
+    else if (q.x() > q.y() && q.y() > q.z()) mult *= 6;
+    else mult *= 3;
+    double vv = 0;
+    double maxrad = 0;
+    for (size_t j = 0; j < mult; ++j) {
+      Quaternion tx(Random::Global.Normal<double>(),
+		    Random::Global.Normal<double>(),
+		    Random::Global.Normal<double>(),
+		    Random::Global.Normal<double>());
+      tx.Normalize();
+      double maxrad1;
+      double v = s.Volume(i, rad, res, maxrad1, tx) / uniform;
+      vv += v;
+      maxrad = max(maxrad, maxrad1);
+    }
+    s.Member(i).Print(cout);
+    cout << " " << fixed << setprecision(9)
+	 << vv/mult << " "
+	 << setw(5) << setprecision(2) << maxrad * 180/M_PI << " "
+	 << setw(2) << mult << endl;
+    vsum += vv;
+  }
+  cout << "Total " << fixed << setprecision(9) << vsum
+       << " Average " << fixed << setprecision(9) << vsum/num << endl;
+}
+
+void VolCellVEC(double rad, size_t res) {
+  size_t num;
+  PackSet s;
+  AddV(s);
+  AddE(s);
+  AddC(s);
+  num = s.Number();
+  /*
+  for (size_t i = 0; i < num; ++i) {
+    s.Member(i).Print(cout);
+    cout << endl;
+  }
+  exit(0);
+  */
+  double uniform = 4.0 * M_PI/3.0 / num;
+  num = 12;
+  double vsum = 0;
+  for (size_t i = 0; i < 3; ++i) {
+    size_t k, mult;
+    if (i == 0) {
+      k = 0;
+      mult = 1;
+    } else if (i == 1) {
+      k = 60;
+      mult = 6;
+    } else {
+      k = 60 + 360;
+      mult = 5;
+    }
+    double vv = 0;
+    double maxrad = 0;
+    for (size_t j = 0; j < mult; ++j) {
+      Quaternion tx(Random::Global.Normal<double>(),
+		    Random::Global.Normal<double>(),
+		    Random::Global.Normal<double>(),
+		    Random::Global.Normal<double>());
+      tx.Normalize();
+      double maxrad1;
+      double v = s.Volume(k, rad, res, maxrad1, tx) / uniform;
+      vv += v;
+      maxrad = max(maxrad, maxrad1);
+    }
+    s.Member(i).Print(cout);
+    cout << " " << fixed << setprecision(9)
+	 << vv/mult << " "
+	 << setw(5) << setprecision(2) << maxrad * 180/M_PI << " "
+	 << setw(2) << mult << endl;
+    vsum += vv;
+  }
+  cout << "Total " << fixed << setprecision(9) << vsum
+       << " Average " << fixed << setprecision(9) << vsum/num << endl;
+}
+
+void VolCellVC(double rad, size_t res) {
+  size_t num;
+  PackSet s;
+  AddV(s);
+  AddC(s);
+  num = s.Number();
+  double uniform = 4.0 * M_PI/3.0 / num;
+  num = 6;
+  double vsum = 0;
+  for (size_t i = 0; i < 2; ++i) {
+    size_t k, mult;
+    if (i == 0) {
+      k = 0;
+      mult = 1;
+    } else {
+      k = 60;
+      mult = 5;
+    }
+    double vv = 0;
+    double maxrad = 0;
+    for (size_t j = 0; j < mult; ++j) {
+      Quaternion tx(Random::Global.Normal<double>(),
+		    Random::Global.Normal<double>(),
+		    Random::Global.Normal<double>(),
+		    Random::Global.Normal<double>());
+      tx.Normalize();
+      double maxrad1;
+      double v = s.Volume(k, rad, res, maxrad1, tx) / uniform;
+      vv += v;
+      maxrad = max(maxrad, maxrad1);
+    }
+    s.Member(i).Print(cout);
+    cout << " " << fixed << setprecision(9)
+	 << vv/mult << " "
+	 << setw(5) << setprecision(2) << maxrad * 180/M_PI << " "
+	 << setw(2) << mult << endl;
+    vsum += vv;
+  }
+  cout << "Total " << fixed << setprecision(9) << vsum
+       << " Average " << fixed << setprecision(9) << vsum/num << endl;
+}
+
+double MaxRadiusCell(const PackSet& s, double delta, size_t num) {
+  double r = 0;
+  //  size_t count = 0;
+  size_t n = int(sqrt(0.5)/delta) + 1;
+  double d = 1.0/double(n);
+  for (size_t iy = 0; iy <= n; ++iy)
+    for (size_t iz = 0; iz <= iy; ++iz) {
+      double x = sqrt(2.0) - 1, y = (iy * d) * x, z = (iz * d) * x;
+      double ss = x + y + z;
+      if (ss > 1) {
+	x /= ss;
+	y /= ss;
+	z /= ss;
+      }
+      double r1 = s.MaxRadius(Quaternion(1.0, x, y, z), delta/100, num);
+      r = max(r1, r);
+    }
+#if 0
+  while (count < num) {
+    double w = Random::Global.Normal<double>(),
+      x = Random::Global.Normal<double>()/w,
+      y = Random::Global.Normal<double>()/w,
+      z = Random::Global.Normal<double>()/w;
+    if (abs(x) > sqrt(2.0) - 1 ||
+	abs(y) > sqrt(2.0) - 1 ||
+	abs(z) > sqrt(2.0) - 1 ||
+	abs(x) + abs(y) + abs(z) > 1)
+      continue;
+    /*
+      if (!(abs(x) > sqrt(2.0) - 1 - delta || 
+	  abs(y) > sqrt(2.0) - 1 - delta || 
+	  abs(z) > sqrt(2.0) - 1 - delta ||
+	  abs(x) + abs(y) + abs(z) > 1 - sqrt(3.0) * delta))
+      continue;
+    */
+    count++;
+    double r1 = s.MaxRadius(Quaternion(1.0, x, y, z), delta/100, 10000);
+    r = max(r1, r);
+  }
+#endif
+  return r;
+}
+
+void Radius(double i, double j, double k, double delta) {
+  PackSet s;
+  s.Add(Quaternion(1.0, pind(i, delta), pind(j, delta), pind(k, delta)));
+  s.Add(Quaternion(1.0, pind(i+1, delta), pind(j, delta), pind(k, delta)));
+  s.Add(Quaternion(1.0, pind(i+0.5, delta), pind(j+0.5, delta), pind(k+0.5, delta)));
+  s.Add(Quaternion(1.0, pind(i+0.5, delta), pind(j+0.5, delta), pind(k-0.5, delta)));
+  double r = s.MaxRadius(Quaternion(1.0,
+				    pind(i+0.5, delta),
+				    pind(j+0.25, delta),
+				    pind(k, delta)),
+			 delta/100, 100000);
+  cout << i << " "
+       << j << " "
+       << k << " "
+       << r << endl;
+}
+
+int main(int argc, char* argv[], char*[]) {
   Random::Global.Reseed();
   cout << "Seed set to: " << Random::Global.SeedString() << endl;
+  if (1) {
+  if (0) {
+    double rad = 22.3 * M_PI/180;
+    VolCellVEC(rad, 500);
+    //double rad = 28.8 * M_PI/180;
+    //VolCellVC(rad, 500);
+    exit(0);
+  }
+  if (0) {
+    double delta = 0.33582;
+    double rad = 20.83;
+    size_t res = 100;
+    if (argc > 1) {
+      string arg = string(argv[1]);
+      delta = strtod(arg.c_str(), NULL);
+    }
+    if (argc > 2) {
+      string arg = string(argv[2]);
+      rad = strtod(arg.c_str(), NULL);
+    }
+    if (argc > 3) {
+      string arg = string(argv[3]);
+      res = strtol(arg.c_str(), NULL, 10);
+    }
+    rad += 0.02;
+    rad *= M_PI/180;
+    VolCell48(delta, rad, res);
+  } else {
+  /*
+
+  Quaternion tx(Random::Global.Normal<double>(),
+		Random::Global.Normal<double>(),
+		Random::Global.Normal<double>(),
+		Random::Global.Normal<double>());
+  tx.Normalize();
+  {
+    PackSet s;
+    AddV(s);
+    AddE(s);
+    AddC(s);
+    
+    double vert = s.Volume(0, 22.3 * M_PI/180.0, 200+0, tx);
+    double edge = s.Volume(60, 22.3 * M_PI/180.0, 200+0, tx);
+    double cell = s.Volume(60+360, 22.3 * M_PI/180.0, 200+0, tx);
+    double uniform = 4.0 * M_PI/3.0 / s.Number();
+    cout << fixed << setprecision(8)
+	 << vert / uniform << " "
+	 << edge / uniform << " "
+	 << cell / uniform << endl;
+  }
+  */
+
+  double delta = 0.26;
+  if (argc > 1) {
+    string arg = string(argv[1]);
+    delta = strtod(arg.c_str(), NULL);
+  }
+  /*
+  for (size_t i = 1000; i < 4160; ++i) {
+  size_t num;
+  PackSet s(Cell48(i/10000.0, num, false));
+  }
+  return 0;
+  */
+  size_t num;
+  PackSet s(Cell48(delta, num, false));
+  double r = MaxRadiusCell(s, delta, 20000);
+  double r0 = s.MaxRadius(Quaternion(1, delta/2, delta/4, 0), delta/100, 100000);
+  double r1 = 0;
+  /*
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  r1 = max(r1,s.MaxRadius(Quaternion(0.911,0.283,0.283,0.094), delta/100, 100000));
+  */
+  r0 = max(r0, r1);
+  double rr = max(r, r0);
+  double cov = num * (rr - sin(rr))/M_PI;
+  cout << "Delta " << delta
+       << " Num " << num
+       << " Max " << r * 180/M_PI << " " << r0 * 180/M_PI
+       << " " << max(r, r0) * 180/M_PI
+       << " Coverage " << cov << endl;
+  }
+  /*
+  for (size_t i = 0; i < s.Number(); ++i) {
+    Quaternion q = s.Member(i);
+    q.Canonicalize();
+    q.Print(cout);
+    cout << endl;
+  }
+  */
+  return 0;
+ int n = 40;
+  Radius(0, 0, 0, 0.01);
+  Radius(0, 0, n-1, 0.01);
+  Radius(0, n-1, n-1, 0.01);
+  Radius(n-1, n-1, n-1, 0.01);
+  for (size_t i = 0; i <= 40; ++i)
+    for (size_t j = 0; j <= i; ++j)
+      for (size_t k = 0; k <= j; ++k)
+	Radius(i, j, k, 0.01);
+  return 0;
+}
   //  Quaternion pre(1,2,0.5,-1.2);
   //  Quaternion post(0.3,-0.5,0.8,0.7);
 
-  //  bool dozcw = true, coverageradius = true;
-  //  size_t indmin = 0, indmax = 8;
-  bool dozcw = false, coverageradius = true;
-  size_t indmin = 0, indmax = 0;
+  bool dozcw = true, coverageradius = true;
+  size_t indmin = 0, indmax = 8;
+  // bool dozcw = false, coverageradius = true;
+  // size_t indmin = 0, indmax = 0;
 
   for (size_t ind = indmin; ind <= indmax; ++ind) {
     PackSet s; // (pre,post);
@@ -839,9 +1321,14 @@ int main() {
 	double alpha = 2 * M_PI * double((i*a) % n)/n;
 	double beta = acos(2 * double((i*b) % n)/n - 1);
 	double gamma = 2 * M_PI * double((i*c) % n)/n;
+	/*
 	Quaternion q(Vector3D<double>(0,0,1), alpha);
 	q *= Quaternion(Vector3D<double>(0,1,0), beta);
 	q *= Quaternion(Vector3D<double>(0,0,1), gamma);
+	*/
+	Quaternion q(Vector3D<double>(0,0,1), -gamma);
+	q *= Quaternion(Vector3D<double>(0,1,0), -beta);
+	q *= Quaternion(Vector3D<double>(0,0,1), -alpha);
 	s.Add(q);
       }
     } else {
@@ -849,7 +1336,7 @@ int main() {
 	Add24(s);
       } else {
 	unsigned char cat = 0;
-	cout << "Case: ";
+	cout << "Case<: ";
 	if (ind&1) {
 	  cout << "V";
 	  AddV(s, cat++);

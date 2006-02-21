@@ -15,6 +15,7 @@
 using namespace std;
 
 #include "Vector3D.h"
+#include <iostream>
 // #include "Types.h"
 
 //#ifndef ROTATIONMATRIX_H
@@ -30,30 +31,32 @@ using namespace std;
 class Quaternion
 {
 public:
-	Quaternion();
-	Quaternion(double m[3][3] );
-	Quaternion(double w, double x, double y, double z);
-	Quaternion(Vector3D<double> axis, double angle);
-	Quaternion(Vector3D<double> rotate, bool turnp = false);
-	Vector3D<double> RotateVector(bool turnp = false) const;
+  Quaternion();
+  Quaternion(double m[3][3] );
+  Quaternion(double w, double x, double y, double z);
+  Quaternion(Vector3D<double> axis, double angle);
+  Quaternion(Vector3D<double> rotate, bool turnp = false);
+  Vector3D<double> RotateVector(bool turnp = false) const;
 
-	Quaternion& operator*=(const Quaternion& q);
-	Quaternion& operator+=(const Quaternion& q);
-	Quaternion& operator-=(const Quaternion& q);
-	Quaternion& operator*=(double s);
-	Quaternion& operator/=(double s);
-	Quaternion operator*(const Quaternion& a) const;
+  Quaternion& operator*=(const Quaternion& q);
+  Quaternion& operator+=(const Quaternion& q);
+  Quaternion& operator-=(const Quaternion& q);
+  Quaternion& operator*=(double s);
+  Quaternion& operator/=(double s);
+  Quaternion operator*(const Quaternion& a) const;
 
-	bool operator==(const Quaternion& q) const;
-    void CircularRotate(size_t i);
-	void Normalize();
-	void Canonicalize();
-	double DotProduct(const Quaternion& q) const;
-	size_t FindClosest(const vector<Quaternion>& l) const;
+  bool operator==(const Quaternion& q) const;
+  void CircularRotate(size_t i);
+  void Normalize();
+  void Canonicalize();
+  double DotProduct(const Quaternion& q) const;
+  size_t FindClosest(const vector<Quaternion>& l) const;
 
-	double Magnitude() const;
-	Quaternion Conjugate() const;
-	Vector3D<double> transformPoint(const Vector3D<double>& pos) const;
+  double Magnitude() const;
+  Quaternion Conjugate() const;
+  Vector3D<double> transformPoint(const Vector3D<double>& pos) const;
+  void Print(ostream& s) const;
+  void PrintEuler(ostream& s) const;
 
   //	RotationMatrix Matrix() const;
 
@@ -80,12 +83,12 @@ public:
 #if !defined(NDEBUG)
 	static void TurnToAngleTest();
 #endif
+	static double AngleToTurn(double theta);
+	static double TurnToAngle(double turn);
 
 private:
 
 	double   m_w, m_x, m_y, m_z;
-	static double AngleToTurn(double theta);
-	static double TurnToAngle(double turn);
 
 };
 

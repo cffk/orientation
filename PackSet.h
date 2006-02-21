@@ -16,9 +16,13 @@ public:
     m_pre.Normalize();
     m_post.Normalize();
   }
-  void Add(const Quaternion& q, unsigned char cat = 0);
+  void Add(const Quaternion& q, unsigned char cat = 0, bool skipcheck = false);
   size_t Number() const {
     return m_set.size();
+  }
+  Quaternion Member(size_t i) const {
+    assert(i < Number());
+    return m_set[i];
   }
   void Analyze(size_t num) const;
   void Analyze0(size_t num) const;
@@ -31,6 +35,8 @@ public:
   double MinMaxRadius(size_t k, double eps);
   size_t MonteCarlo(size_t num, double delta, double beta);
   size_t MonteCarloA(size_t num, double delta, double beta);
+  double Volume(size_t ind, double radius, size_t n,
+		double& maxrad, const Quaternion& tx = Quaternion(1,0,0,0));
 private:
   vector<Quaternion> m_set;
   vector<unsigned char> m_cat;

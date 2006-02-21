@@ -13,6 +13,7 @@
 #include <cmath>
 #include <limits>
 #include <cassert>
+#include <iomanip>
 // #include "MathUtilities.h"
 
 namespace {
@@ -181,27 +182,21 @@ void Quaternion::Normalize()
 }
 
 void Quaternion::Canonicalize() {
-	Normalize();
-	if (m_w > 0)
-		return;
-	if (m_w < 0) {
-		m_w *= -1; m_x *= -1; m_y *= -1; m_z *= -1; return;
+	// Make first biggest element positive
+	double mag = m_w;
+	if (abs(m_x) > abs(mag))
+	  mag = m_x;
+	if (abs(m_y) > abs(mag))
+	  mag = m_y;
+	if (abs(m_z) > abs(mag))
+	  mag = m_z;
+	if (mag < 0) {
+	  m_w *= -1;
+	  m_x *= -1;
+	  m_y *= -1;
+	  m_z *= -1;
 	}
-	if (m_x > 0)
-		return;
-	if (m_x < 0) {
-		m_x *= -1; m_y *= -1; m_z *= -1; return;
-	}
-	if (m_y > 0)
-		return;
-	if (m_y < 0) {
-		m_y *= -1; m_z *= -1; return;
-	}
-	if (m_z > 0)
-		return;
-	if (m_z < 0) {
-		m_z *= -1; return;
-	}
+	return;
 }
 
 /**
@@ -507,3 +502,49 @@ size_t Quaternion::FindClosest(const vector<Quaternion>& l) const {
 	assert(result < l.size());
 	return result;
 }
+
+void Quaternion::Print(ostream& s) const {
+  s << fixed << setprecision(9) << setw(12) << m_w << " ";
+  s << setw(12) << m_x << " ";
+  s << setw(12) << m_y << " ";
+  s << setw(12) << m_z;
+}
+
+void Quaternion::PrintEuler(ostream& s) const {
+  // Convert to rotation matrix (assume quaternion is already normalized)
+  double
+	//	m00 = 1 - 2*m_y*m_y - 2*m_z*m_z,
+	m01 = 	  2*m_x*m_y - 2*m_z*m_w,
+	m02 = 	  2*m_x*m_z + 2*m_y*m_w,
+	//	m10 = 	  2*m_x*m_y + 2*m_z*m_w,
+	m11 = 1 - 2*m_x*m_x - 2*m_z*m_z,
+	m12 = 	  2*m_y*m_z - 2*m_x*m_w,
+	m20 = 	  2*m_x*m_z - 2*m_y*m_w,
+	m21 = 	  2*m_y*m_z + 2*m_x*m_w,
+	m22 = 1 - 2*m_x*m_x - 2*m_y*m_y;
+  // Taken from Ken Shoemake, "Euler Angle Conversion", Graphics Gems
+  // IV, Academic 1994.
+  // http://vered.rose.utoronto.ca/people/david_dir/GEMS/GEMS.html
+  double sy = sqrt(m02*m02 + m12*m12);
+  double ea,  eb, ec;
+  eb = atan2(sy, m22);
+  if (sy > 16 * numeric_limits<double>::epsilon()) {
+	ea = atan2(m21, m20);
+	ec = atan2(m12, -m02);
+  } else {
+	ea = 0;
+	ec = atan2(m01, m11);
+  }
+  if (ea < 0)
+	ea += 2*M_PI;
+  if (ec < 0)
+	ec += 2*M_PI;
+  if (ea < numeric_limits<double>::min())
+	ea = 0;
+  if (ec < numeric_limits<double>::min())
+	ec = 0;
+  s << fixed << setprecision(9) << setw(11) << ea << " ";
+  s << setw(11) << eb << " ";
+  s << setw(11) << ec;
+}
+

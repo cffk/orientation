@@ -1,7 +1,5 @@
+# $Id$
 SOURCES = ExpandSet.cpp
-
-# Quaternion.cpp
-#HEADERS = Quaternion.h
 CONFIG -= qt
 CONFIG += warn_on
 unix:OBJECTS_DIR = .obj
