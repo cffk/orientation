@@ -1,0 +1,7 @@
+# Orientation set c48n9, number = 216, radius = 36.47 degrees
+# $Id$
+# For more information, See http://charles.karney.info/orientation/
+format grid
+0.26091 7.00    216    9   2 36.47  2.89689
+ 0  0  0  0.303584  24.84   1
+ 1  1  1  1.087052  36.47   8
