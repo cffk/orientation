@@ -410,7 +410,7 @@ The convention for Euler angles is given in
 The &ldquo;grid&rdquo; links provide a compact representation for those
 orientation sets based on the 48-cell with &delta; and &sigma;
 determining the grid spacing.  This is described below.  All the
-datasets can be obtained at once by downloading a compressed tar file <a
+datasets can be obtained at once by downloading the compressed tar file <a
 href="data/orient.tgz">orient.tgz</a>.
 <p>
 The following orientation sets are non-optimal:
@@ -545,7 +545,7 @@ compact represtentation of the orientation set with a file in the
     &zeta;<sub><i>i</i></sub>
     <i>w</i><sub><i>i</i></sub>
     <i>r</i><sub><i>i</i></sub>(&deg;)
-    <i>m</i><sub><i>i</i></sub>
+    <i>m</i><sub><i>i</i></sub>.
 </ul>
 where <i>N</i><sub><i>d</i></sub> is the number of distinct entries,
 <i>r</i><sub><i>i</i></sub> is the radius of the
@@ -567,7 +567,8 @@ available in <a href="ExpandSet.cpp">ExpandSet.cpp</a>.
 For each set, can obtain new sets by performing an arbitrary rotation of
 R<sup>4</sup> via
 <blockquote>
-    <b>q</b><sub><i>i</i></sub>' = <b>r</b> <b>q</b><sub><i>i</i></sub> <b>s</b>
+    <b>q</b><sub><i>i</i></sub>&prime; =
+    <b>r</b> <b>q</b><sub><i>i</i></sub> <b>s</b>
 </blockquote>
 where <b>r</b> and <b>s</b> are fixed (possibly random) unit
 quaternions.  The pre- and post-multiplication allows all rotations of
@@ -583,9 +584,9 @@ different random <b>r</b> and <b>s</b> each time.
 (Note that original sets possess symmetry that if
 <b>q</b><sub><i>i</i></sub> is a member of the set then so is the
 inverse rotation <b>q</b><sub><i>i</i></sub>*.  The new sets
-<b>q</b><sub><i>i</i></sub>' do not have this property, in general.)
+<b>q</b><sub><i>i</i></sub>&prime; do not have this property, in general.)
 <p>
-Estimated accuracy (ulp = units in last place).
+Estimated accuracy (ulp = units in last place:)
 <ul>
 <li>&delta;: exact
   (search for &ldquo;optimum&rdquo; was with resolution 10<sup>&minus;5</sup>)
