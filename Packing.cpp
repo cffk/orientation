@@ -819,9 +819,9 @@ static size_t zcw[9][4] = {
 };
 
 double pind(double ind, double delta) {
-  const double s = 1.86; // sqrt(3.0); // 1.86; //sqrt(3.5);
+  const double s = 7.0; // 1.86; // sqrt(3.0); // 1.86; //sqrt(3.5);
   ind *= delta;
-  switch (2) {
+  switch (0) {
   case 0:
     return sinh(s * ind)/s;
     break;
@@ -850,23 +850,24 @@ vector<Quaternion> CellSet(double delta) {
   int n = 2*int(1/delta)+1;
   int maxind = -1;
   double maxslope = -100;
+  double f = 0.0;
   for (int x = -n; x <= n; ++x) {
     double xf = pind(0.5*x, delta);
-    if (abs(xf) >= sqrt(2.0) - 1)
+    if (abs(xf) >= sqrt(2.0) - 1 - f)
       continue;
     for (int y = -n; y <= n; ++y) {
       if ((x&1) != (y&1))	// All even or all odd
 	continue;
       double yf = pind(0.5*y, delta);
-      if (abs(yf) >= sqrt(2.0) - 1)
+      if (abs(yf) >= sqrt(2.0) - 1 - f)
 	continue;
       for (int z = -n; z <= n; ++z) {
 	if ((x&1) != (z&1))	// All even or all odd
 	  continue;
 	double zf = pind(0.5*z, delta);
-	if (abs(zf) >= sqrt(2.0) - 1)
+	if (abs(zf) >= sqrt(2.0) - 1 - f)
 	  continue;
-	if (abs(xf) + abs(yf) + abs(zf) >= 1)
+	if (abs(xf) + abs(yf) + abs(zf) >= 1 - f)
 	  continue;
 	double s = xf + yf + zf;
 	if (s > maxslope) {
@@ -1042,7 +1043,7 @@ void VolCellVEC(double rad, size_t res) {
   num = s.Number();
   /*
   for (size_t i = 0; i < num; ++i) {
-    s.Member(i).Print(cout);
+    s.Member(i).PrintEuler(cout);
     cout << endl;
   }
   exit(0);
@@ -1199,7 +1200,7 @@ int main(int argc, char* argv[], char*[]) {
     //VolCellVC(rad, 500);
     exit(0);
   }
-  if (0) {
+  if (1) {
     double delta = 0.33582;
     double rad = 20.83;
     size_t res = 100;

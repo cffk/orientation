@@ -1,0 +1,607 @@
+<html>
+<head><!--Xbase href="http://charles.karney.info/orientation/index.html"Y-->
+<title>Nearly optimal coverings of orientation space</title>
+<meta name="description"
+content="Nearly Optimal Coverings of Orientation Space">
+<meta name="author" content="Charles F. F. Karney">
+</head>
+<body topmargin=10 leftmargin=10>
+<h3>Nearly Optimal Coverings of Orientation Space</h3>
+
+<p>$Id$
+
+<h4>Introduction</h4>
+<p>
+Here we give various sets of orientations with cover orientation space
+nearly optimally.  These are suitable for searching orientation space
+and for integrating over orientation (together with the provided
+weights).  The background to this work is given in
+<blockquote>
+Charles F. F. Karney<br>
+<a href="http://charles.karney.info/biblio/quat.html">Quaternions
+in molecular modeling</a><br>
+June 2005 (revised August 2005)<br>
+Preprint:
+<a href="http://arxiv.org/abs/physics/0506177">arXiv:physics/0506177</a>
+</blockquote>
+
+<p>
+Given a set of <i>N</i> orientations, we define its covering radius,
+&alpha;, as the maximum amount by which an arbitrary orientation needs
+to be rotated to align it with the closest member of the set.  The
+coverage, <i>c</i>, is defined as
+<blockquote>
+    <i>c</i> = <i>N</i>(&alpha; &minus; sin &alpha;)/&pi;
+</blockquote>
+<p>
+A set of orientations is <i>optimal</i> if
+<ul>
+<li> there are no other sets with the same number of elements with a
+ smaller &alpha; (and <i>c</i>).
+<li>  all sets with a smaller number of elements have a larger &alpha;.
+</ul>
+<p>
+For any set of <i>N</i> orientations, we can perform a Voronoi
+tessellation of orientation space, associating with each member of the
+set, <b>q</b><sub><i>i</i></sub>, all orientations for which
+<b>q</b><sub><i>i</i></sub> is the closest orientation.  We define the
+relative weight of <b>q</b><sub><i>i</i></sub> as
+<blockquote>
+    <i>w</i><sub><i>i</i></sub> =
+     <i>N</i>(volume of Voronoi cell <i>i</i>)/(volume of orientation space)
+</blockquote>
+We can approximate an orientational average of <i>f</i>(<b>q</b>) with
+<blockquote>
+    &lt;<i>f</i>&gt; =
+    &sum;<sub><i>i</i></sub> <i>w</i><sub><i>i</i></sub>
+    <i>f</i>(<b>q</b><sub><i>i</i></sub>) / <i>N</i>
+</blockquote>
+Assuming that the variation in <i>f</i> is bounded, we expect that, for
+a given <i>N</i>, the error in this approximation to be minimized with
+an optimal set of orientations.
+<p>
+Expressing the orientation as a unit quaternion or a pair of opposite
+points on S<sup>3</sup>, we see that this problem is just a 4-dimensional
+generalization of the &ldquo;Spherical Covering&rdquo; problem.  See
+<blockquote>
+    R. H. Hardin, N. J. A. Sloane, and W. D. Smith<br>
+    Spherical Coverings<br>
+    <a href="http://www.research.att.com/~njas/coverings/">http://www.research.att.com/~njas/coverings/</a>
+</blockquote>
+with the additional constraint that the points come as opposite pairs.
+The formula for <i>c</i> above involves the &ldquo;area&rdquo; of a
+spherical cap on S<sup>3</sup> or radius &alpha;/2.
+
+<h4>Table of orientation sets</h4>
+<p>
+Because determining optimal sets of points is a hard problem, we provide
+here &ldquo;nearly&rdquo; optimal sets of points.  We begin by providing
+a table of the orientation sets ranking by decreasing &alpha;.
+<p>
+<center>
+<table border=1 cellspacing=0 cellpadding=0 valign=baseline rules="groups">
+<thead align=left valign=baseline>
+<tr>
+                    <th>&nbsp;
+  <th>name       <th>&nbsp; &nbsp;
+  <th align=center><i>N</i>       <th>&nbsp; &nbsp;
+  <th align=center>&alpha; (&deg;)       <th>&nbsp; &nbsp;
+  <th align=center><i>c</i>       <th>&nbsp; &nbsp;
+  <th align=center>&delta;       <th>&nbsp; &nbsp;
+  <th align=center>&sigma;       <th>&nbsp; &nbsp;
+  <th>download   <th>&nbsp;
+<tbody align=left valign=baseline>
+<tr>
+<td><td>c48u1    
+<td><td align=right>     24
+<td><td align=right> 62.80
+<td><td> 1.57514
+<td><td> 0.70000
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u1.quat">quat</a>
+ <a href="data/c48u1.grid">grid</a>
+ <a href="data/c48u1.euler">euler</a>
+<tr>
+<td><td>c600v    
+<td><td align=right>     60
+<td><td align=right> 44.48
+<td><td> 1.44480
+<td><td>        
+<td><td>     
+<td><td>
+ <a href="data/c600v.quat">quat</a>
+ <a href="data/c600v.euler">euler</a>
+<tr>
+<td><td>c48u9    
+<td><td align=right>    216
+<td><td align=right> 38.45
+<td><td> 3.38698
+<td><td> 0.41422
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u9.quat">quat</a>
+ <a href="data/c48u9.grid">grid</a>
+ <a href="data/c48u9.euler">euler</a>
+<tr>
+<td><td>c48n9    
+<td><td align=right>    216
+<td><td align=right> 36.47
+<td><td> 2.89689
+<td><td> 0.26091
+<td><td> 7.00
+<td><td>
+ <a href="data/c48n9.quat">quat</a>
+ <a href="data/c48n9.grid">grid</a>
+ <a href="data/c48n9.euler">euler</a>
+<tr>
+<td><td>c600vc   
+<td><td align=right>    360
+<td><td align=right> 27.78
+<td><td> 2.15246
+<td><td>        
+<td><td>     
+<td><td>
+ <a href="data/c600vc.quat">quat</a>
+ <a href="data/c600vc.euler">euler</a>
+<tr>
+<td><td>c600vec  
+<td><td align=right>    720
+<td><td align=right> 22.25
+<td><td> 2.22117
+<td><td>        
+<td><td>     
+<td><td>
+ <a href="data/c600vec.quat">quat</a>
+ <a href="data/c600vec.euler">euler</a>
+<tr>
+<td><td>c48u27   
+<td><td align=right>    648
+<td><td align=right> 20.83
+<td><td> 1.64091
+<td><td> 0.33582
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u27.quat">quat</a>
+ <a href="data/c48u27.grid">grid</a>
+ <a href="data/c48u27.euler">euler</a>
+<tr>
+<td><td>c48u83   
+<td><td align=right>   1992
+<td><td align=right> 16.29
+<td><td> 2.42065
+<td><td> 0.25970
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u83.quat">quat</a>
+ <a href="data/c48u83.grid">grid</a>
+ <a href="data/c48u83.euler">euler</a>
+<tr>
+<td><td>c48u157  
+<td><td align=right>   3768
+<td><td align=right> 14.49
+<td><td> 3.22614
+<td><td> 0.20710
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u157.quat">quat</a>
+ <a href="data/c48u157.grid">grid</a>
+ <a href="data/c48u157.euler">euler</a>
+<tr>
+<td><td>c48u181  
+<td><td align=right>   4344
+<td><td align=right> 12.29
+<td><td> 2.27013
+<td><td> 0.19415
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u181.quat">quat</a>
+ <a href="data/c48u181.grid">grid</a>
+ <a href="data/c48u181.euler">euler</a>
+<tr>
+<td><td>c48u309  
+<td><td align=right>   7416
+<td><td align=right> 10.07
+<td><td> 2.13338
+<td><td> 0.15846
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u309.quat">quat</a>
+ <a href="data/c48u309.grid">grid</a>
+ <a href="data/c48u309.euler">euler</a>
+<tr>
+<td><td>c48n309  
+<td><td align=right>   7416
+<td><td align=right>  9.72
+<td><td> 1.91567
+<td><td> 0.15167
+<td><td> 1.86
+<td><td>
+ <a href="data/c48n309.quat">quat</a>
+ <a href="data/c48n309.grid">grid</a>
+ <a href="data/c48n309.euler">euler</a>
+<tr>
+<td><td>c48u519  
+<td><td align=right>  12456
+<td><td align=right>  9.05
+<td><td> 2.60257
+<td><td> 0.13807
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u519.quat">quat</a>
+ <a href="data/c48u519.grid">grid</a>
+<tr>
+<td><td>c48u527  
+<td><td align=right>  12648
+<td><td align=right>  8.43
+<td><td> 2.13318
+<td><td> 0.13229
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u527.quat">quat</a>
+ <a href="data/c48u527.grid">grid</a>
+<tr>
+<td><td>c48n527  
+<td><td align=right>  12648
+<td><td align=right>  8.17
+<td><td> 1.94334
+<td><td> 0.12599
+<td><td> 1.86
+<td><td>
+ <a href="data/c48n527.quat">quat</a>
+ <a href="data/c48n527.grid">grid</a>
+<tr>
+<td><td>c48u815  
+<td><td align=right>  19560
+<td><td align=right>  7.40
+<td><td> 2.23719
+<td><td> 0.11607
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u815.quat">quat</a>
+ <a href="data/c48u815.grid">grid</a>
+<tr>
+<td><td>c48u1153 
+<td><td align=right>  27672
+<td><td align=right>  6.60
+<td><td> 2.23735
+<td><td> 0.10330
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u1153.quat">quat</a>
+ <a href="data/c48u1153.grid">grid</a>
+<tr>
+<td><td>c48u1201 
+<td><td align=right>  28824
+<td><td align=right>  6.48
+<td><td> 2.20918
+<td><td> 0.09999
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u1201.quat">quat</a>
+ <a href="data/c48u1201.grid">grid</a>
+<tr>
+<td><td>c48u1641 
+<td><td align=right>  39384
+<td><td align=right>  5.75
+<td><td> 2.10646
+<td><td> 0.08993
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u1641.quat">quat</a>
+ <a href="data/c48u1641.grid">grid</a>
+<tr>
+<td><td>c48u2219 
+<td><td align=right>  53256
+<td><td align=right>  5.27
+<td><td> 2.20117
+<td><td> 0.08249
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u2219.quat">quat</a>
+ <a href="data/c48u2219.grid">grid</a>
+<tr>
+<td><td>c48u2867 
+<td><td align=right>  68808
+<td><td align=right>  5.24
+<td><td> 2.79649
+<td><td> 0.07531
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u2867.quat">quat</a>
+ <a href="data/c48u2867.grid">grid</a>
+<tr>
+<td><td>c48u2947 
+<td><td align=right>  70728
+<td><td align=right>  4.71
+<td><td> 2.07843
+<td><td> 0.07359
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u2947.quat">quat</a>
+ <a href="data/c48u2947.grid">grid</a>
+<tr>
+<td><td>c48u3733 
+<td><td align=right>  89592
+<td><td align=right>  4.37
+<td><td> 2.11197
+<td><td> 0.06836
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u3733.quat">quat</a>
+ <a href="data/c48u3733.grid">grid</a>
+<tr>
+<td><td>c48u4701 
+<td><td align=right> 112824
+<td><td align=right>  4.22
+<td><td> 2.39041
+<td><td> 0.06372
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u4701.quat">quat</a>
+ <a href="data/c48u4701.grid">grid</a>
+<tr>
+<td><td>c48u4749 
+<td><td align=right> 113976
+<td><td align=right>  4.00
+<td><td> 2.05300
+<td><td> 0.06248
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u4749.quat">quat</a>
+ <a href="data/c48u4749.grid">grid</a>
+<tr>
+<td><td>c48u5879 
+<td><td align=right> 141096
+<td><td align=right>  3.74
+<td><td> 2.07325
+<td><td> 0.05837
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u5879.quat">quat</a>
+ <a href="data/c48u5879.grid">grid</a>
+<tr>
+<td><td>c48u7111 
+<td><td align=right> 170664
+<td><td align=right>  3.53
+<td><td> 2.11481
+<td><td> 0.05514
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u7111.quat">quat</a>
+ <a href="data/c48u7111.grid">grid</a>
+<tr>
+<td><td>c48u8649 
+<td><td align=right> 207576
+<td><td align=right>  3.26
+<td><td> 2.02898
+<td><td> 0.05094
+<td><td> 0.00
+<td><td>
+ <a href="data/c48u8649.quat">quat</a>
+ <a href="data/c48u8649.grid">grid</a>
+</table>
+</center>
+<p>
+The orientation sets can be downloaded by the links in the
+&ldquo;download&rdquo; column.  The &ldquo;quat&rdquo; and
+&ldquo;euler&rdquo; links are in the following format:
+<ul>
+<li>Any number of initial comment lines beginning with &ldquo;#&rdquo;.
+<li>A line containing either &ldquo;format quaternion&rdquo; or
+    &ldquo;format euler&rdquo;.
+<li>A line containing: <i>N</i> &alpha;(&deg;) <i>c</i>.
+<li><i>N</i> lines containing:
+    <i>q</i><sub>0<i>i</i></sub>
+    <i>q</i><sub>1<i>i</i></sub>
+    <i>q</i><sub>2<i>i</i></sub>
+    <i>q</i><sub>3<i>i</i></sub>
+    <i>w</i><sub><i>i</i></sub> (for quaternions)
+<li><i>or</i> <i>N</i> lines containing:
+    <i>a</i><sub><i>i</i></sub>
+    <i>b</i><sub><i>i</i></sub>
+    <i>g</i><sub><i>i</i></sub>
+    <i>w</i><sub><i>i</i></sub> (for Euler angles).
+</ul>
+The convention for Euler angles is given in
+<blockquote>
+<a href="http://www.mhl.soton.ac.uk/research/help/Euler/index.html">http://www.mhl.soton.ac.uk/research/help/Euler/index.html</a>
+</blockquote>
+The &ldquo;grid&rdquo; links provide a compact representation for those
+orientation sets based on the 48-cell with &delta; and &sigma;
+determining the grid spacing.  This is described below.  All the
+datasets can be obtained at once by downloading a compressed tar file <a
+href="data/orient.tgz">orient.tgz</a>.
+<p>
+The following orientation sets are non-optimal:
+<ul>
+<li>
+c48u9 (beaten by c48n9),
+<li>
+c600vec (beaten by c48u27),
+<li>
+c48u309 (beaten by c48n309),
+<li>
+c48u527 (beaten by c48n527).
+</ul>
+<p>
+The following orientation sets are sub-optimal with a substantially
+thinner covering achieved by another set with somewhat more points:
+<ul>
+<li>
+c48u157 (use c48u181 instead),
+<li>
+c48u519 (use c48n527 instead),
+<li>
+c48u2867 (use c48u2947 instead),
+<li>
+c48u4701 (use c48u4749 instead).
+</ul>
+
+<h4>Sets based on regular and semi-regular polytopes</h4>
+<p>
+One strategy for evenly spacing points on S<sup>3</sup> is to place
+the points using the vertices or cell centers of regular and
+semi-regular polytopes.  The vertices of all the regular 4-dimensional
+polytopes is given in
+<blockquote>
+<a href="http://astronomy.swin.edu.au/~pbourke/polyhedra/platonic4d/">http://astronomy.swin.edu.au/~pbourke/polyhedra/platonic4d/</a>
+</blockquote>
+c48u1 and c660v are two such sets.  The
+points in c48u1 are placed at the centers of the cells of a
+truncated-cubic tetracontaoctachoron (48-cell), see
+<blockquote>
+<a href="http://members.aol.com/Polycell/section3.html">http://members.aol.com/Polycell/section3.html</a>
+</blockquote>
+These points are obtained by using the vertices of 2 24-cells in there
+mutually dual positions.  Similarly the points in c600v are the
+vertices of a 600-cell.  Both c48u1 and c600v probably <i>are</i>
+optimal sets.
+
+The set c600v can be extended by adding the centers of the cells of
+the 600-cell (equivalent to the vertices of its dual, the 120-cell) to
+give the set c600vc and by adding, in addition, the midpoints of the
+edges of the 600-cell, to give the set c600vec.
+
+<h4>Sets based on gridding the 48-cell</h4>
+<p>
+In order to obtain larger sets we seek a systematic way to place
+multiple points with the cells of a polytope.  The 48-cell is
+convenient for this purpose.  The cells are all identical truncated
+cubes and thus a body-center-cubic lattice lines up nicely with the
+cells.  [A body-center-cubic lattice provides the thinnest covering of
+R<sup>3</sup>, Bambah (1954).]
+<p>
+Here is the procedure.  Each cell of the 48-cell is a truncated cube.
+Define the primary cell as
+<blockquote>
+    <i>p</i><sub>0</sub> = 1,<br>
+    <i>p</i><sub><i>i</i>&gt;0</sub> &lt; &radic;2 &minus; 1,<br>
+    |<i>p</i><sub>1</sub>| +
+    |<i>p</i><sub>2</sub>| +
+    |<i>p</i><sub>3</sub>| &lt; 1.
+</blockquote>
+The other cells are generated from this by the application of the
+rotational symmetry group of the cube.
+<p>
+Place a body-centered-cubic lattice, with lattice spacing &delta;, within
+the primary cell (including only points lying within the cell).  Thus we
+take
+<blockquote>
+   <i>p</i><sub>0</sub> = 1,<br>
+   [<i>p</i><sub>1</sub>, <i>p</i><sub>2</sub>, <i>p</i><sub>3</sub>] =
+    [&xi;, &eta;, &zeta;] &delta;/2
+</blockquote>
+where [&xi;, &eta;, &zeta;] are either all even or all odd integers
+(to give a BCC lattice).  These points are then normalized with
+<b>q</b> = <b>p</b>/|<b>p</b>| to place them on S<sup>3</sup>.
+<p>
+As &delta; is varied the number of points within the cell (<i>N</i>/24)
+varies.  For a given <i>N</i>, pick the &delta; with the smallest
+covering.  (To obtain the sets given here, we systematically varied
+&delta; in steps of 0.00001.)  Discard any <i>N</i> for which there is a
+smaller <i>N</i> with a smaller (or equal) &alpha;.
+<p>
+This procedure yields the sets c48uMMM where MMM =
+<i>N</i><sub><i>c</i></sub> = <i>N</i>/24 is the
+number of points per cell.
+<p>
+There are many ways in which we might imagine improving these sets.
+One possibility is to use a non-uniform lattice spacing using
+<blockquote>
+   <i>p</i><sub>1</sub> = sinh(&sigma; &xi; &delta;/2)/&sigma;,
+</blockquote>
+and similarly for <i>p</i><sub>2</sub> and <i>p</i><sub>3</sub>.
+(The uniform lattice is recovered in the limit &sigma; = 0.)  The
+increasing lattice spacing afforded by the sinh function counteracts
+the bunching of points occurring when the lattice points are projected
+onto S<sup>3</sup>.)  The two sets c48n309 and c48n527 are two examples
+with reasonably thin coverage.  In the case of c48n9, &sigma; is used
+merely to delay the entry of a new set of points into the primary cell.
+<p>
+One might also offset the lattice and remove or perturb the points here
+the surface of the cells.  However because these strategies make the
+search for good sets considerably more complex, the simple procedure
+with the uniform lattice outlined above probably suffices for most
+purposes.
+<p>
+Because of the regular way that the grids are obtained, we can define a
+compact represtentation of the orientation set with a file in the
+&ldquo;grid&rdquo; format.  This consists of
+<ul>
+<li>Any number of initial comment lines beginning with &ldquo;#&rdquo;.
+<li>A line containing &ldquo;format grid&rdquo;.
+<li>A line containing:
+    &delta;
+    &sigma;
+    <i>N</i>
+    <i>N</i><sub><i>c</i></sub>
+    <i>N</i><sub><i>d</i></sub>
+    &alpha;(&deg;)
+    <i>c</i>.
+<li><i>N</i><sub><i>d</i></sub> lines containing:
+    &xi;<sub><i>i</i></sub>
+    &eta;<sub><i>i</i></sub>
+    &zeta;<sub><i>i</i></sub>
+    <i>w</i><sub><i>i</i></sub>
+    <i>r</i><sub><i>i</i></sub>(&deg;)
+    <i>m</i><sub><i>i</i></sub>
+</ul>
+where <i>N</i><sub><i>d</i></sub> is the number of distinct entries,
+<i>r</i><sub><i>i</i></sub> is the radius of the
+<i>i</i>th Voronoi cell [thus &alpha; =
+max<sub><i>i</i></sub>(<i>r</i><sub><i>i</i></sub>)], and
+<i>m</i><sub><i>i</i></sub> is the multiplicity of the entry.  In the
+file, we restrict &xi;<sub><i>i</i></sub> &ge;
+&eta;<sub><i>i</i></sub> &ge; &zeta;<sub><i>i</i></sub> &ge 0.  For
+each such [&xi;<sub><i>i</i></sub>, &eta;<sub><i>i</i></sub>,
+&zeta;<sub><i>i</i></sub>], we generate <i>m</i><sub><i>i</i></sub>
+distinct permutations by changing the order and the signs of the
+elements.
+<p>
+Code to produce the full orientation sets for the grid form is
+available in <a href="ExpandSet.cpp">ExpandSet.cpp</a>.
+
+<h4>Further remarks</h4>
+<p>
+For each set, can obtain new sets by performing an arbitrary rotation of
+R<sup>4</sup> via
+<blockquote>
+    <b>q</b><sub><i>i</i></sub>' = <b>r</b> <b>q</b><sub><i>i</i></sub> <b>s</b>
+</blockquote>
+where <b>r</b> and <b>s</b> are fixed (possibly random) unit
+quaternions.  The pre- and post-multiplication allows all rotations of
+R<sup>4</sup> to be accessed; see
+<blockquote>
+    <a href="http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation">http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation</a>
+</blockquote>
+<p>
+One way of estimating the error in the numerical quadrature is to repeat
+the calculation several times with the same set of points but choosing
+different random <b>r</b> and <b>s</b> each time.
+<p>
+(Note that original sets possess symmetry that if
+<b>q</b><sub><i>i</i></sub> is a member of the set then so is the
+inverse rotation <b>q</b><sub><i>i</i></sub>*.  The new sets
+<b>q</b><sub><i>i</i></sub>' do not have this property, in general.)
+<p>
+Estimated accuracy (ulp = units in last place).
+<ul>
+<li>&delta;: exact
+  (search for &ldquo;optimum&rdquo; was with resolution 10<sup>&minus;5</sup>)
+<li>&sigma;: exact
+<li>&alpha;: 0.006&deg; (0.6 ulp)
+<li><i>c</i>: 0.6&times;10<sup>&minus;5</sup> (0.6 ulp)
+<li><i>w</i>: average 1.5&times;10<sup>&minus;6</sup> (1 ulp),
+        maximum 4&times;10<sup>&minus;6</sup> (4 ulp)
+        (last digit adjusted to give
+         &sum;<sub><i>i</i></sub> <i>w</i><sub><i>i</i></sub> = <i>N</I>)
+<li><i>r</i>: 0.015&deg; (1.5 ulp)
+<li><i>q</i><sub>0</sub>, <i>q</i><sub>1</sub>,
+    <i>q</i><sub>2</sub>, <i>q</i><sub>3</sub>:
+    0.51&times;10<sup>&minus;9</sup> (0.51 ulp)
+</ul>
+<hr>
+<address><a href="http://ckarney.karney.info">Charles Karney</a> (2006-02-22)</address>
+<a href="http://ckarney.karney.info/misc/">Back to index.</a>
+</body></html>

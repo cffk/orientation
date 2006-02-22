@@ -511,40 +511,61 @@ void Quaternion::Print(ostream& s) const {
 }
 
 void Quaternion::PrintEuler(ostream& s) const {
-  // Convert to rotation matrix (assume quaternion is already normalized)
+  // Print out orientation as a set of Euler angles, following the
+  // convention given in
+  //
+  //    http://www.mhl.soton.ac.uk/research/help/Euler/index.html
+  //
+  // Rotation by Euler angles [a,b,c] is defined as rotation by -a about
+  // z axis, followed by rotation by -b about y axis. followed by
+  // rotation by -c about z axis (again).
+  //
+  // Convert to rotation matrix (assume quaternion is already
+  // normalized)
   double
-	//	m00 = 1 - 2*m_y*m_y - 2*m_z*m_z,
-	m01 = 	  2*m_x*m_y - 2*m_z*m_w,
-	m02 = 	  2*m_x*m_z + 2*m_y*m_w,
-	//	m10 = 	  2*m_x*m_y + 2*m_z*m_w,
-	m11 = 1 - 2*m_x*m_x - 2*m_z*m_z,
-	m12 = 	  2*m_y*m_z - 2*m_x*m_w,
-	m20 = 	  2*m_x*m_z - 2*m_y*m_w,
-	m21 = 	  2*m_y*m_z + 2*m_x*m_w,
-	m22 = 1 - 2*m_x*m_x - 2*m_y*m_y;
+	//	m00 = 1 - 2*y()*y() - 2*z()*z(),
+	m01 = 	  2*x()*y() - 2*z()*w(),
+	m02 = 	  2*x()*z() + 2*y()*w(),
+	//	m10 = 	  2*x()*y() + 2*z()*w(),
+	m11 = 1 - 2*x()*x() - 2*z()*z(),
+	m12 = 	  2*y()*z() - 2*x()*w(),
+	m20 = 	  2*x()*z() - 2*y()*w(),
+	m21 = 	  2*y()*z() + 2*x()*w(),
+	m22 = 1 - 2*x()*x() - 2*y()*y();
   // Taken from Ken Shoemake, "Euler Angle Conversion", Graphics Gems
   // IV, Academic 1994.
-  // http://vered.rose.utoronto.ca/people/david_dir/GEMS/GEMS.html
+  //
+  //    http://vered.rose.utoronto.ca/people/david_dir/GEMS/GEMS.html
   double sy = sqrt(m02*m02 + m12*m12);
-  double ea,  eb, ec;
-  eb = atan2(sy, m22);
+  double a,  b, c;
+  b = atan2(sy, m22);
   if (sy > 16 * numeric_limits<double>::epsilon()) {
-	ea = atan2(m21, m20);
-	ec = atan2(m12, -m02);
+	a = atan2(m21, m20);
+	c = atan2(m12, -m02);
   } else {
-	ea = 0;
-	ec = atan2(m01, m11);
+	a = 0;
+	c = atan2(m01, m11);
   }
-  if (ea < 0)
-	ea += 2*M_PI;
-  if (ec < 0)
-	ec += 2*M_PI;
-  if (ea < numeric_limits<double>::min())
-	ea = 0;
-  if (ec < numeric_limits<double>::min())
-	ec = 0;
-  s << fixed << setprecision(9) << setw(11) << ea << " ";
-  s << setw(11) << eb << " ";
-  s << setw(11) << ec;
-}
+  // b is already in [0, pi]. Fold a, c to [0, 2*pi].
+  if (a < 0)
+	a += 2*M_PI;
+  if (c < 0)
+	c += 2*M_PI;
+  // Convert -0 to 0.
+  if (a < numeric_limits<double>::min())
+	a = 0;
+  if (c < numeric_limits<double>::min())
+	c = 0;
+  s << fixed << setprecision(9) << setw(11) << a << " "
+    << setw(11) << b << " " << setw(11) << c;
 
+#if !defined(NDEBUG)
+  // Sanity check.  Convert from Euler angles back to a quaternion, q
+  Quaternion q = Quaternion(cos(c/2), 0, 0, -sin(c/2)) // -c about z
+    * Quaternion(cos(b/2), 0, -sin(b/2), 0) // -b about y
+	* Quaternion(cos(a/2), 0, 0, -sin(a/2)); // -a about z
+  // and check that q is parallel to *this.
+  double t = abs(q.w() * w() + q.x() * x() + q.y() * y() + q.z() * z());
+  assert(t > 1 - 16 * numeric_limits<double>::epsilon());
+#endif
+}
