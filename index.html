@@ -409,9 +409,16 @@ The convention for Euler angles is given in
 </blockquote>
 The &ldquo;grid&rdquo; links provide a compact representation for those
 orientation sets based on the 48-cell with &delta; and &sigma;
-determining the grid spacing.  This is described below.  All the
-datasets can be obtained at once by downloading the compressed tar file <a
-href="data/orient.tgz">orient.tgz</a>.
+determining the grid spacing.  This is described below.  The
+datasets can be obtained at once by downloading the compressed tar files
+with the orientations expressed as
+<a href="data/orientquat.tgz">quaternions</a> and as
+<a href="data/orienteuler.tgz">Euler angles</a>.  Only a subset of
+orientations sets in Euler angle format is provided here.  A complete
+set is available at Malcolm Levitt's web site at
+<blockquote>
+<a href="http://www.mhl.soton.ac.uk/public/software/Orientations/3angles/Karney/">http://www.mhl.soton.ac.uk/public/software/Orientations/3angles/Karney/</a>
+</blockquote>
 <p>
 The following orientation sets are non-optimal:
 <ul>
@@ -559,8 +566,15 @@ each such [&xi;<sub><i>i</i></sub>, &eta;<sub><i>i</i></sub>,
 distinct permutations by changing the order and the signs of the
 elements.
 <p>
-Code to produce the full orientation sets for the grid form is
-available in <a href="ExpandSet.cpp">ExpandSet.cpp</a>.
+A compressed tar file with the orientations expressed is in this grid
+format is available in <a href="data/orientgrid.tgz">orientgrid.tgz</a>.
+(This also contains the c600 orientation sets in quaternion format.)
+Code to produce the full orientation sets for the grid form is available
+in <a href="ExpandSet.cpp">ExpandSet.cpp</a>.  After compiling this
+code, you can generate a quaternion orientation set with, e.g.,
+<blockquote>
+   ./ExpandSet &lt; c48u527.grid &gt; c48u527.quat
+</blockquote>
 
 <h4>Further remarks</h4>
 <p>
@@ -586,7 +600,7 @@ different random <b>r</b> and <b>s</b> each time.
 inverse rotation <b>q</b><sub><i>i</i></sub>*.  The new sets
 <b>q</b><sub><i>i</i></sub>&prime; do not have this property, in general.)
 <p>
-Estimated accuracy (ulp = units in last place:)
+Estimated accuracy (ulp = units in last place):
 <ul>
 <li>&delta;: exact
   (search for &ldquo;optimum&rdquo; was with resolution 10<sup>&minus;5</sup>)
