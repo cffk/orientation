@@ -74,16 +74,11 @@ using namespace std;
 class Quaternion {
 public:
   double w, x, y, z;
-  Quaternion(double ww, double xx, double yy, double zz)
+  Quaternion(double ww = 1, double xx = 0, double yy = 0, double zz = 0)
     : w(ww)
     , x(xx)
     , y(yy)
     , z(zz) {}
-  Quaternion() 
-    : w(1)
-    , x(0)
-    , y(0)
-    , z(0) {}
   void Normalize() {
     double t = w*w + x*x + y*y + z*z;
     assert(t > 0);
@@ -325,8 +320,8 @@ void Quaternion::PrintEuler(ostream& s) const {
   //    http://www.mhl.soton.ac.uk/research/help/Euler/index.html
   //
   // Rotation by Euler angles [a,b,c] is defined as rotation by -a about
-  // z axis, followed by rotation by -b about y axis. followed by
-  // rotation by -c about z axis (again).
+  // x axis, followed by rotation by -b about z axis. followed by
+  // rotation by -c about x axis (again).
   //
   // Convert to rotation matrix (assume quaternion is already
   // normalized)

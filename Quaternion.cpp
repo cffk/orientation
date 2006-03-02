@@ -517,8 +517,8 @@ void Quaternion::PrintEuler(ostream& s) const {
   //    http://www.mhl.soton.ac.uk/research/help/Euler/index.html
   //
   // Rotation by Euler angles [a,b,c] is defined as rotation by -a about
-  // z axis, followed by rotation by -b about y axis. followed by
-  // rotation by -c about z axis (again).
+  // x axis, followed by rotation by -b about z axis. followed by
+  // rotation by -c about x axis (again).
   //
   // Convert to rotation matrix (assume quaternion is already
   // normalized)
