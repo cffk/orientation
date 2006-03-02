@@ -404,7 +404,7 @@ double PackSet::MinMaxRadius(size_t k, double eps) {
 }
 
 double PackSet::Volume(size_t ind, double radius, size_t n,
-		       double& maxrad, const Quaternion& tx) {
+		       double& maxrad, const Quaternion& tx, bool docomp) {
   PackSet temp;
   temp.Add(Quaternion(1,0,0,0));
   Quaternion q = Member(ind);
@@ -414,6 +414,28 @@ double PackSet::Volume(size_t ind, double radius, size_t n,
       continue;
     if (Dist(Closeness(q, Member(i))) <= 2 * radius)
       temp.Add(Member(i) * qc, 0, true);
+  }
+  if (!docomp) {
+    cout << "x=[" << setprecision(13);
+    for (size_t i = 0;;) {
+      bool turnp = false;
+      Vector3D<double> t =
+	tx.transformPoint(temp.Member(i).RotateVector(turnp));
+      cout << t.x << " " << t.y << " " << t.z;
+      if (++i == temp.Number()) {
+	cout << "];" << endl;
+	break;
+      } else
+	cout << ";";
+    }
+    cout << "[v, c] = voronoin(x);" << endl;
+    cout << "y = v(c{1},:);" << endl;
+    cout << "[k, volume] = convhulln(y);" << endl;
+    cout << "rad = max(sqrt(sum(v(c{1},:).^2,2)));" << endl;
+    cout << "i = i+1;" << endl;
+    cout << "vol(i) = volume;" << endl;
+    cout << "maxrad(i) = rad;" << endl;
+    return 0;
   }
   // Integrate over sphere of radius radt by constructing cubical grid
   // and count cubes.  V = int WithinCell(x) dV.  Better to integrate

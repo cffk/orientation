@@ -36,7 +36,9 @@ public:
   size_t MonteCarlo(size_t num, double delta, double beta);
   size_t MonteCarloA(size_t num, double delta, double beta);
   double Volume(size_t ind, double radius, size_t n,
-		double& maxrad, const Quaternion& tx = Quaternion(1,0,0,0));
+		double& maxrad,
+		const Quaternion& tx = Quaternion(1,0,0,0),
+		bool docomp = true);
 private:
   vector<Quaternion> m_set;
   vector<unsigned char> m_cat;

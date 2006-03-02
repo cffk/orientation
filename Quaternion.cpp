@@ -523,29 +523,30 @@ void Quaternion::PrintEuler(ostream& s) const {
   // Convert to rotation matrix (assume quaternion is already
   // normalized)
   double
-	//	m00 = 1 - 2*y()*y() - 2*z()*z(),
+	m00 = 1 - 2*y()*y() - 2*z()*z(),
 	m01 = 	  2*x()*y() - 2*z()*w(),
 	m02 = 	  2*x()*z() + 2*y()*w(),
-	//	m10 = 	  2*x()*y() + 2*z()*w(),
-	m11 = 1 - 2*x()*x() - 2*z()*z(),
+	m10 = 	  2*x()*y() + 2*z()*w(),
+	// m11 = 1 - 2*x()*x() - 2*z()*z(),
 	m12 = 	  2*y()*z() - 2*x()*w(),
 	m20 = 	  2*x()*z() - 2*y()*w(),
-	m21 = 	  2*y()*z() + 2*x()*w(),
+	// m21 = 	  2*y()*z() + 2*x()*w(),
 	m22 = 1 - 2*x()*x() - 2*y()*y();
   // Taken from Ken Shoemake, "Euler Angle Conversion", Graphics Gems
   // IV, Academic 1994.
   //
   //    http://vered.rose.utoronto.ca/people/david_dir/GEMS/GEMS.html
-  double sy = sqrt(m02*m02 + m12*m12);
+  double sy = sqrt(m10*m10 + m20*m20);
   double a,  b, c;
-  b = atan2(sy, m22);
+  b = atan2(sy, m00);
   if (sy > 16 * numeric_limits<double>::epsilon()) {
-	a = atan2(m21, m20);
-	c = atan2(m12, -m02);
+	a = atan2(m02, m01);
+	c = atan2(m20, -m10);
   } else {
 	a = 0;
-	c = atan2(m01, m11);
+	c = atan2(m12, m22);
   }
+  /*
   // b is already in [0, pi]. Fold a, c to [0, 2*pi].
   if (a < 0)
 	a += 2*M_PI;
@@ -556,14 +557,15 @@ void Quaternion::PrintEuler(ostream& s) const {
 	a = 0;
   if (c < numeric_limits<double>::min())
 	c = 0;
-  s << fixed << setprecision(9) << setw(11) << a << " "
-    << setw(11) << b << " " << setw(11) << c;
+  */
+  s << fixed << setprecision(9) << setw(12) << a << " "
+    << setw(12) << b << " " << setw(12) << c;
 
 #if !defined(NDEBUG)
   // Sanity check.  Convert from Euler angles back to a quaternion, q
-  Quaternion q = Quaternion(cos(c/2), 0, 0, -sin(c/2)) // -c about z
-    * Quaternion(cos(b/2), 0, -sin(b/2), 0) // -b about y
-	* Quaternion(cos(a/2), 0, 0, -sin(a/2)); // -a about z
+  Quaternion q = Quaternion(cos(c/2), -sin(c/2), 0, 0) // -c about x
+    * Quaternion(cos(b/2), 0, 0, -sin(b/2)) // -b about z
+	* Quaternion(cos(a/2), -sin(a/2), 0, 0); // -a about x
   // and check that q is parallel to *this.
   double t = abs(q.w() * w() + q.x() * x() + q.y() * y() + q.z() * z());
   assert(t > 1 - 16 * numeric_limits<double>::epsilon());
