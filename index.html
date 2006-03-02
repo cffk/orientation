@@ -11,6 +11,7 @@ content="Nearly Optimal Coverings of Orientation Space">
 <p>$Id$
 
 <h4>Introduction</h4>
+
 <p>
 Here we give various sets of orientations with cover orientation space
 nearly optimally.  These are suitable for searching orientation space
@@ -33,6 +34,7 @@ coverage, <i>c</i>, is defined as
 <blockquote>
     <i>c</i> = <i>N</i>(&alpha; &minus; sin &alpha;)/&pi;
 </blockquote>
+
 <p>
 A set of orientations is <i>optimal</i> if
 <ul>
@@ -40,6 +42,7 @@ A set of orientations is <i>optimal</i> if
  smaller &alpha; (and <i>c</i>).
 <li>  all sets with a smaller number of elements have a larger &alpha;.
 </ul>
+
 <p>
 For any set of <i>N</i> orientations, we can perform a Voronoi
 tessellation of orientation space, associating with each member of the
@@ -59,6 +62,7 @@ We can approximate an orientational average of <i>f</i>(<b>q</b>) with
 Assuming that the variation in <i>f</i> is bounded, we expect that, for
 a given <i>N</i>, the error in this approximation to be minimized with
 an optimal set of orientations.
+
 <p>
 Expressing the orientation as a unit quaternion or a pair of opposite
 points on S<sup>3</sup>, we see that this problem is just a 4-dimensional
@@ -72,11 +76,29 @@ with the additional constraint that the points come as opposite pairs.
 The formula for <i>c</i> above involves the &ldquo;area&rdquo; of a
 spherical cap on S<sup>3</sup> or radius &alpha;/2.
 
+<p>
+The problem of determining good orientation sets for the purposes of
+averaging is discussed in
+<blockquote>
+M. Ed&eacute;n and M. H. Levitt<br>
+&ldquo;<a
+href="http://www.mhl.soton.ac.uk/public/publications/papers/published/81-100/96/96_Eden_GSQ.pdf">Computation
+of Orientational Averages in Solid State NMR by Gaussian Spherical Quadrature</a>&rdquo;<br>
+J. Magn. Reson. 132, 220&ndash;239 (1998)<br>
+</blockquote>
+
+and the orientation sets described in this paper can be downloaded from
+<blockquote>
+<a href="http://www.mhl.soton.ac.uk/research/software/Orientations">http://www.mhl.soton.ac.uk/research/software/Orientations</a>
+</blockquote>
+
 <h4>Table of orientation sets</h4>
+
 <p>
 Because determining optimal sets of points is a hard problem, we provide
 here &ldquo;nearly&rdquo; optimal sets of points.  We begin by providing
 a table of the orientation sets ranking by decreasing &alpha;.
+
 <p>
 <center>
 <table border=1 cellspacing=0 cellpadding=0 valign=baseline rules="groups">
@@ -382,6 +404,7 @@ a table of the orientation sets ranking by decreasing &alpha;.
  <a href="data/c48u8649.grid">grid</a>
 </table>
 </center>
+
 <p>
 The orientation sets can be downloaded by the links in the
 &ldquo;download&rdquo; column.  The &ldquo;quat&rdquo; and
@@ -413,12 +436,14 @@ determining the grid spacing.  This is described below.  The
 datasets can be obtained at once by downloading the compressed tar files
 with the orientations expressed as
 <a href="data/orientquat.tgz">quaternions</a> and as
-<a href="data/orienteuler.tgz">Euler angles</a>.  Only a subset of
+<a href="data/orienteuler.tgz">Euler angles</a>.
+Only a subset of
 orientations sets in Euler angle format is provided here.  A complete
 set is available at Malcolm Levitt's web site at
 <blockquote>
 <a href="http://www.mhl.soton.ac.uk/public/software/Orientations/3angles/Karney/">http://www.mhl.soton.ac.uk/public/software/Orientations/3angles/Karney/</a>
 </blockquote>
+
 <p>
 The following orientation sets are non-optimal:
 <ul>
@@ -431,6 +456,7 @@ c48u309 (beaten by c48n309),
 <li>
 c48u527 (beaten by c48n527).
 </ul>
+
 <p>
 The following orientation sets are sub-optimal with a substantially
 thinner covering achieved by another set with somewhat more points:
@@ -446,6 +472,7 @@ c48u4701 (use c48u4749 instead).
 </ul>
 
 <h4>Sets based on regular and semi-regular polytopes</h4>
+
 <p>
 One strategy for evenly spacing points on S<sup>3</sup> is to place
 the points using the vertices or cell centers of regular and
@@ -471,6 +498,7 @@ give the set c600vc and by adding, in addition, the midpoints of the
 edges of the 600-cell, to give the set c600vec.
 
 <h4>Sets based on gridding the 48-cell</h4>
+
 <p>
 In order to obtain larger sets we seek a systematic way to place
 multiple points with the cells of a polytope.  The 48-cell is
@@ -478,6 +506,7 @@ convenient for this purpose.  The cells are all identical truncated
 cubes and thus a body-center-cubic lattice lines up nicely with the
 cells.  [A body-center-cubic lattice provides the thinnest covering of
 R<sup>3</sup>, Bambah (1954).]
+
 <p>
 Here is the procedure.  Each cell of the 48-cell is a truncated cube.
 Define the primary cell as
@@ -490,6 +519,7 @@ Define the primary cell as
 </blockquote>
 The other cells are generated from this by the application of the
 rotational symmetry group of the cube.
+
 <p>
 Place a body-centered-cubic lattice, with lattice spacing &delta;, within
 the primary cell (including only points lying within the cell).  Thus we
@@ -502,16 +532,19 @@ take
 where [&xi;, &eta;, &zeta;] are either all even or all odd integers
 (to give a BCC lattice).  These points are then normalized with
 <b>q</b> = <b>p</b>/|<b>p</b>| to place them on S<sup>3</sup>.
+
 <p>
 As &delta; is varied the number of points within the cell (<i>N</i>/24)
 varies.  For a given <i>N</i>, pick the &delta; with the smallest
 covering.  (To obtain the sets given here, we systematically varied
 &delta; in steps of 0.00001.)  Discard any <i>N</i> for which there is a
 smaller <i>N</i> with a smaller (or equal) &alpha;.
+
 <p>
 This procedure yields the sets c48uMMM where MMM =
 <i>N</i><sub><i>c</i></sub> = <i>N</i>/24 is the
 number of points per cell.
+
 <p>
 There are many ways in which we might imagine improving these sets.
 One possibility is to use a non-uniform lattice spacing using
@@ -525,12 +558,14 @@ the bunching of points occurring when the lattice points are projected
 onto S<sup>3</sup>.)  The two sets c48n309 and c48n527 are two examples
 with reasonably thin coverage.  In the case of c48n9, &sigma; is used
 merely to delay the entry of a new set of points into the primary cell.
+
 <p>
 One might also offset the lattice and remove or perturb the points here
 the surface of the cells.  However because these strategies make the
 search for good sets considerably more complex, the simple procedure
 with the uniform lattice outlined above probably suffices for most
 purposes.
+
 <p>
 Because of the regular way that the grids are obtained, we can define a
 compact represtentation of the orientation set with a file in the
@@ -565,6 +600,7 @@ each such [&xi;<sub><i>i</i></sub>, &eta;<sub><i>i</i></sub>,
 &zeta;<sub><i>i</i></sub>], we generate <i>m</i><sub><i>i</i></sub>
 distinct permutations by changing the order and the signs of the
 elements.
+
 <p>
 A compressed tar file with the orientations expressed is in this grid
 format is available in <a href="data/orientgrid.tgz">orientgrid.tgz</a>.
@@ -577,6 +613,7 @@ code, you can generate a quaternion orientation set with, e.g.,
 </blockquote>
 
 <h4>Further remarks</h4>
+
 <p>
 For each set, can obtain new sets by performing an arbitrary rotation of
 R<sup>4</sup> via
@@ -590,15 +627,18 @@ R<sup>4</sup> to be accessed; see
 <blockquote>
     <a href="http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation">http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation</a>
 </blockquote>
+
 <p>
 One way of estimating the error in the numerical quadrature is to repeat
 the calculation several times with the same set of points but choosing
 different random <b>r</b> and <b>s</b> each time.
+
 <p>
 (Note that original sets possess symmetry that if
 <b>q</b><sub><i>i</i></sub> is a member of the set then so is the
 inverse rotation <b>q</b><sub><i>i</i></sub>*.  The new sets
 <b>q</b><sub><i>i</i></sub>&prime; do not have this property, in general.)
+
 <p>
 Estimated accuracy (ulp = units in last place):
 <ul>
