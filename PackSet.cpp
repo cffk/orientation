@@ -418,7 +418,7 @@ double PackSet::Volume(size_t ind, double radius, size_t n,
   if (!docomp) {
     cout << "x=[" << setprecision(13);
     for (size_t i = 0;;) {
-      bool turnp = false;
+      bool turnp = true;
       Vector3D<double> t =
 	tx.transformPoint(temp.Member(i).RotateVector(turnp));
       cout << t.x << " " << t.y << " " << t.z;
@@ -428,10 +428,7 @@ double PackSet::Volume(size_t ind, double radius, size_t n,
       } else
 	cout << ";";
     }
-    cout << "[v, c] = voronoin(x);" << endl;
-    cout << "y = v(c{1},:);" << endl;
-    cout << "[k, volume] = convhulln(y);" << endl;
-    cout << "rad = max(sqrt(sum(v(c{1},:).^2,2)));" << endl;
+    cout << "[volume, rad] = comp(x);" << endl;
     cout << "i = i+1;" << endl;
     cout << "vol(i) = volume;" << endl;
     cout << "maxrad(i) = rad;" << endl;

@@ -996,8 +996,8 @@ void VolCell48(double delta, double rad, size_t res) {
   bool docomp = false;
   if (!docomp) {
     cout << "i=0;";
-    //    cout << "uniform=4*pi/3/" << 24*num << ";" << endl;
-    cout << "uniform=8*pi^2/" << 24*num << ";" << endl;
+    cout << "uniform=4*pi/3/" << 24*num << ";" << endl;
+    // cout << "uniform=8*pi^2/" << 24*num << ";" << endl;
     cout << "vol=[]; mult=[]; maxrad=[];" << endl;
   }
   for (size_t i = 0; i < num; ++i) {
@@ -1054,7 +1054,7 @@ void VolCellVEC(double rad, size_t res) {
   AddE(s);
   AddC(s);
   num = s.Number();
-  bool printcoords = false;
+  bool printcoords = true;
   if (printcoords) {
     for (size_t i = 0; i < num; ++i) {
       s.Member(i).PrintEuler(cout);
@@ -1231,7 +1231,7 @@ int main(int argc, char* argv[], char*[]) {
 
   Random::Global.Reseed();
   cout << "Seed set to: " << Random::Global.SeedString() << endl;
-  bool docell600 = false;
+  bool docell600 = true;
   bool dovolumes = true;
   if (1) {
   if (dovolumes) {

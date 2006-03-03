@@ -319,9 +319,9 @@ void Quaternion::PrintEuler(ostream& s) const {
   //
   //    http://www.mhl.soton.ac.uk/research/help/Euler/index.html
   //
-  // Rotation by Euler angles [a,b,c] is defined as rotation by -a about
-  // x axis, followed by rotation by -b about z axis. followed by
-  // rotation by -c about x axis (again).
+  // Rotation by Euler angles [a,b,c] is defined as rotation by c about
+  // x axis, followed by rotation by b about z axis. followed by
+  // rotation by a about x axis (again).
   //
   // Convert to rotation matrix (assume quaternion is already
   // normalized)
@@ -343,20 +343,20 @@ void Quaternion::PrintEuler(ostream& s) const {
   double a,  b, c;
   b = atan2(sy, m00);
   if (sy > 16 * numeric_limits<double>::epsilon()) {
-	a = atan2(m02, m01);
-	c = atan2(m20, -m10);
+    a = atan2(m20, m10);
+    c = atan2(m02, -m01);
   } else {
-	a = 0;
-	c = atan2(m12, m22);
+    a = atan2(-m12, m22);
+    c = 0;
   }
   s << fixed << setprecision(9) << setw(12) << a << " "
     << setw(12) << b << " " << setw(12) << c;
 
 #if !defined(NDEBUG)
   // Sanity check.  Convert from Euler angles back to a quaternion, q
-  Quaternion q = Quaternion(cos(c/2), -sin(c/2), 0, 0). // -c about x
-    Times(Quaternion(cos(b/2), 0, 0, -sin(b/2)). // -b about z
-	  Times(Quaternion(cos(a/2), -sin(a/2), 0, 0))); // -a about x
+  Quaternion q = Quaternion(cos(a/2), sin(a/2), 0, 0). // a about x
+    Times(Quaternion(cos(b/2), 0, 0, sin(b/2)). // b about z
+	  Times(Quaternion(cos(c/2), sin(c/2), 0, 0))); // c about x
   // and check that q is parallel to *this.
   double t = abs(q.w * w + q.x * x + q.y * y + q.z * z);
   assert(t > 1 - 16 * numeric_limits<double>::epsilon());
