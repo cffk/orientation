@@ -1025,6 +1025,7 @@ void VolCell48(double delta, double rad, size_t res) {
 		    Random::Global.Normal<double>(),
 		    Random::Global.Normal<double>());
       tx.Normalize();
+      tx = Quaternion(1,0,0,0);
       double maxrad1;
       double v = s.Volume(i, rad, res, maxrad1, tx, docomp) / uniform;
       vv += v;
@@ -1231,7 +1232,7 @@ int main(int argc, char* argv[], char*[]) {
 
   Random::Global.Reseed();
   cout << "Seed set to: " << Random::Global.SeedString() << endl;
-  bool docell600 = true;
+  bool docell600 = false;
   bool dovolumes = true;
   if (1) {
   if (dovolumes) {
