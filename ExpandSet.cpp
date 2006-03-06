@@ -138,13 +138,17 @@ public:
     m_v.push_back(v);
     m_w.push_back(w);
   }
-  void Print(ostream& s, bool euler = false) const {
+  void Clear() {
+    m_v.clear();
+    m_w.clear();
+  }
+  void Print(ostream& s, bool euler = false, size_t prec = 6) const {
     for (size_t i = 0; i < Number(); ++i) {
       if (euler)
 	m_v[i].PrintEuler(s);
       else
 	m_v[i].Print(s);
-      s << " " << fixed << setprecision(6) << setw(8) << m_w[i] << endl;
+      s << " " << fixed << setprecision(prec) << setw(prec + 2) << m_w[i] << endl;
     }
   }
 private:
@@ -270,7 +274,14 @@ int main(int argc, char* argv[], char*[]) {
   double delta, sigma, maxrad, coverage;
   size_t ncell, ntot, nent;
   cin >> delta >> sigma >> ntot >> ncell >> nent >> maxrad >> coverage;
+  // Use extra digit of precision with weights and radii.  This also
+  // triggers a memory minimizing expansion.
+  const bool fine = delta < 0.05;
+  cout << ntot << " " << fixed
+       << setprecision(fine ? 3 : 2) << maxrad << " "
+       << setprecision(5) << coverage << endl;
   PackSet s;
+  size_t ncell1 = 0;
   for (size_t n = 0; n < nent; ++n) {
     int i, j, k;
     size_t m;
@@ -287,22 +298,34 @@ int main(int argc, char* argv[], char*[]) {
 		       pind(0.5 * t.c, delta, sigma)),
 	    w);
     }
+    ncell1 += m;
+    if (fine) {
+      // Skip n = 0; that's already included.
+      for (size_t n = 1; n < 24; ++n) {
+	Quaternion q(CubeSyms[n][0], CubeSyms[n][1],
+		     CubeSyms[n][2], CubeSyms[n][3]);
+	for (size_t i = 0; i < m; ++i)
+	  s.Add(q.Times(s.Orientation(i)), s.Weight(i));
+      }
+      s.Print(cout, euler, fine ? 7 : 6);
+      s.Clear();
+    }
   }
   assert(cin.good());
-  size_t m = s.Number();
-  assert(m == ncell);
-  // Skip n = 0, that's already included.
-  for (size_t n = 1; n < 24; ++n) {
-    Quaternion q(CubeSyms[n][0], CubeSyms[n][1],
-		 CubeSyms[n][2], CubeSyms[n][3]);
-    for (size_t i = 0; i < m; ++i)
-      s.Add(q.Times(s.Orientation(i)), s.Weight(i));
+  assert(ncell1 == ncell);
+  if (!fine) {
+    size_t m = s.Number();
+    assert(m == ncell);
+    for (size_t n = 1; n < 24; ++n) {
+      Quaternion q(CubeSyms[n][0], CubeSyms[n][1],
+		   CubeSyms[n][2], CubeSyms[n][3]);
+      for (size_t i = 0; i < m; ++i)
+	s.Add(q.Times(s.Orientation(i)), s.Weight(i));
+    }
+    assert(s.Number() == ntot);
+    s.Print(cout, euler, fine ? 7 : 6);
+    s.Clear();
   }
-  assert(s.Number() == ntot);
-  cout << ntot << " " << fixed
-       << setprecision(2) << maxrad << " "
-       << setprecision(5) << coverage << endl;
-  s.Print(cout, euler);
   return 0;
 }
 
