@@ -22,9 +22,9 @@
 //     Any number of initial comment lines beginning with #
 //     A line containing "format grid"
 //     A line containing: delta sigma ntot ncell nent maxrad coverage
-//     nent lines containing: i j k weight radius mult
+//     nent lines containing: k l m weight radius mult
 //
-// Here i >= j >= k >= 0.  delta and sigma are used to define the grid.
+// Here k >= l >= m >= 0.  delta and sigma are used to define the grid.
 // ntot is the total number of orientations, ncell = ntot/24 is the
 // number of orientations per cell of the 48-cell.  maxrad is the
 // covering radius of the set and radius is the radius of the Voronoi
@@ -32,10 +32,10 @@
 // set, i.e., how much overlap there is when caps of radius maxrad are
 // placed at each point; coverage = 1 means no overlap.
 //
-// For each triplet, [i j k], generate mult distinct permutations by
-// changing the order and the signs of the elements.  Each [i j k] is
+// For each triplet, [k l m], generate mult distinct permutations by
+// changing the order and the signs of the elements.  Each [k l m] is
 // converted to a point in a truncated cube [x y z] =
-// [pind(i/2,delta,sigma) pind(j/2,delta,sigma) pind(k/2,delta,sigma)]
+// [pind(k/2,delta,sigma) pind(l/2,delta,sigma) pind(m/2,delta,sigma)]
 // Each [x y z] is converted to a unit quaternion via p = [1 x y z]; q =
 // p/|p| to give ncell orientations.  Finally, the 24 rotational cube
 // symmetries are applied to the results to yield ntot = orientations.
@@ -283,14 +283,14 @@ int main(int argc, char* argv[], char*[]) {
   PackSet s;
   size_t ncell1 = 0;
   for (size_t n = 0; n < nent; ++n) {
-    int i, j, k;
-    size_t m;
+    int k, l, m;
+    size_t mult;
     double r, w;
     assert(cin.good());
-    cin >> i >> j >> k >> w >> r >> m;
-    Permute p(Triple(i, j, k));
-    assert(m == p.Number());
-    for (size_t i = 0; i < m; ++i) {
+    cin >> k >> l >> m >> w >> r >> mult;
+    Permute p(Triple(k, l, m));
+    assert(mult == p.Number());
+    for (size_t i = 0; i < mult; ++i) {
       Triple t = p.Member(i);
       s.Add(Quaternion(1.0,
 		       pind(0.5 * t.a, delta, sigma),
@@ -298,13 +298,13 @@ int main(int argc, char* argv[], char*[]) {
 		       pind(0.5 * t.c, delta, sigma)),
 	    w);
     }
-    ncell1 += m;
+    ncell1 += mult;
     if (fine) {
       // Skip n = 0; that's already included.
       for (size_t n = 1; n < 24; ++n) {
 	Quaternion q(CubeSyms[n][0], CubeSyms[n][1],
 		     CubeSyms[n][2], CubeSyms[n][3]);
-	for (size_t i = 0; i < m; ++i)
+	for (size_t i = 0; i < mult; ++i)
 	  s.Add(q.Times(s.Orientation(i)), s.Weight(i));
       }
       s.Print(cout, euler, fine ? 7 : 6);
@@ -314,12 +314,12 @@ int main(int argc, char* argv[], char*[]) {
   assert(cin.good());
   assert(ncell1 == ncell);
   if (!fine) {
-    size_t m = s.Number();
-    assert(m == ncell);
+    size_t nc = s.Number();
+    assert(nc == ncell);
     for (size_t n = 1; n < 24; ++n) {
       Quaternion q(CubeSyms[n][0], CubeSyms[n][1],
 		   CubeSyms[n][2], CubeSyms[n][3]);
-      for (size_t i = 0; i < m; ++i)
+      for (size_t i = 0; i < nc; ++i)
 	s.Add(q.Times(s.Orientation(i)), s.Weight(i));
     }
     assert(s.Number() == ntot);
