@@ -1,8 +1,11 @@
 #include "PackSet.h"
-#include "Random.hpp"
+#include "RandomLib/Random.hpp"
+#include "RandomLib/NormalDistribution.hpp"
 #include <iostream>
 #include <iomanip>
 //#include <cstdlib>
+
+using namespace RandomLib;
 
 void PackSet::Add(const Quaternion& q, unsigned char cat, bool skipcheck) {
   Quaternion qq = m_pre;
@@ -23,11 +26,12 @@ void PackSet::Add(const Quaternion& q, unsigned char cat, bool skipcheck) {
 void PackSet::Analyze(size_t num) const {
   vector<size_t> count(m_set.size(), 0);
   vector<double> close(m_set.size(), 1);
+  NormalDistribution<double> normal;
   for (size_t i = 0; i < num; ++i) {
-    Quaternion q(Random::Global.Normal<double>(),
-		 Random::Global.Normal<double>(),
-		 Random::Global.Normal<double>(),
-		 Random::Global.Normal<double>());
+    Quaternion q(normal(Random::Global),
+		 normal(Random::Global),
+		 normal(Random::Global),
+		 normal(Random::Global));
     q.Normalize();
     size_t j = FindClosest(q);
     count[j]++;
@@ -71,6 +75,7 @@ void PackSet::Analyze(size_t num) const {
 }
 
 void PackSet::Analyze1() const {
+  NormalDistribution<double> normal;
   vector<unsigned long long> sumcount(m_maxcat, 0);
   unsigned long long num = 0;
   vector<double> cnt(m_maxcat, 0);
@@ -78,10 +83,10 @@ void PackSet::Analyze1() const {
     cnt[m_cat[i]]++;
   while (true) {
     num++;
-    Quaternion q(Random::Global.Normal<double>(),
-		 Random::Global.Normal<double>(),
-		 Random::Global.Normal<double>(),
-		 Random::Global.Normal<double>());
+    Quaternion q(normal(Random::Global),
+		 normal(Random::Global),
+		 normal(Random::Global),
+		 normal(Random::Global));
     q.Normalize();
     size_t j = FindClosest(q);
     sumcount[m_cat[j]]++;
@@ -205,14 +210,15 @@ size_t PackSet::FindClosest(const Quaternion& q) const {
 }
   
 double PackSet::MaxRadiusA(size_t k, double eps) const {
+  NormalDistribution<double> normal;
   double s0 = MinDistance(k) * 0.5;
   double res = 0;
   for (size_t n = 0; n < 12; ++n) {
     double s = s0;
     Quaternion  qq(1,
-		   s * Random::Global.Normal<double>(),
-		   s * Random::Global.Normal<double>(),
-		   s * Random::Global.Normal<double>());
+		   s * normal(Random::Global),
+		   s * normal(Random::Global),
+		   s * normal(Random::Global));
     qq *= m_set[k];
     qq.Normalize();
     double d = Dist(Closeness(qq, m_set[FindClosest(qq)]));
@@ -222,9 +228,9 @@ double PackSet::MaxRadiusA(size_t k, double eps) const {
     while (true) {
       iter++;
       Quaternion nq(1,
-		    s * Random::Global.Normal<double>(),
-		    s * Random::Global.Normal<double>(),
-		    s * Random::Global.Normal<double>());
+		    s * normal(Random::Global),
+		    s * normal(Random::Global),
+		    s * normal(Random::Global));
       nq *= qq;
       nq.Normalize();
       double nd = Dist(Closeness(nq, m_set[FindClosest(nq)]));
@@ -254,6 +260,7 @@ double PackSet::MaxRadiusA(double eps) const {
 }
 
 double PackSet::MaxRadius(const Quaternion& q, double d, size_t num) const {
+  NormalDistribution<double> normal;
   Quaternion qq(q);
   qq.Normalize();
   size_t j = FindClosest(qq);
@@ -261,9 +268,9 @@ double PackSet::MaxRadius(const Quaternion& q, double d, size_t num) const {
   while (num > 0) {
     num--;
     Quaternion nq(1,
-		  d * Random::Global.Normal<double>(),
-		  d * Random::Global.Normal<double>(),
-		  d * Random::Global.Normal<double>());
+		  d * normal(Random::Global),
+		  d * normal(Random::Global),
+		  d * normal(Random::Global));
     nq *= qq;
     nq.Normalize();
     size_t nj = FindClosest(nq);
@@ -298,6 +305,7 @@ double PackSet::MinDistance(size_t k) const {
 }
 
 size_t PackSet::MonteCarlo(size_t num, double delta, double beta) {
+  NormalDistribution<double> normal;
   size_t count = 0;
   size_t n = Number();
   for (size_t i = 0; i < num; ++i) {
@@ -305,9 +313,9 @@ size_t PackSet::MonteCarlo(size_t num, double delta, double beta) {
     double d = MinDistance(k);
     Quaternion old(m_set[k]);
     m_set[k] *= Quaternion(1,
-			   delta * Random::Global.Normal<double>(),
-			   delta * Random::Global.Normal<double>(),
-			   delta * Random::Global.Normal<double>());
+			   delta * normal(Random::Global),
+			   delta * normal(Random::Global),
+			   delta * normal(Random::Global));
     m_set[k].Normalize();
     double d1 = MinDistance(k);
     // Distance acts like -E
@@ -320,6 +328,7 @@ size_t PackSet::MonteCarlo(size_t num, double delta, double beta) {
 }
 
 size_t PackSet::MonteCarloA(size_t num, double delta, double beta) {
+  NormalDistribution<double> normal;
   size_t count = 0;
   size_t n = Number();
   for (size_t i = 0; i < num; ++i) {
@@ -327,9 +336,9 @@ size_t PackSet::MonteCarloA(size_t num, double delta, double beta) {
     double d = MaxRadiusA(k,0.01);
     Quaternion old(m_set[k]);
     m_set[k] *= Quaternion(1,
-			   delta * Random::Global.Normal<double>(),
-			   delta * Random::Global.Normal<double>(),
-			   delta * Random::Global.Normal<double>());
+			   delta * normal(Random::Global),
+			   delta * normal(Random::Global),
+			   delta * normal(Random::Global));
     m_set[k].Normalize();
     double d1 = MaxRadiusA(k,0.01);
     // Distance acts like +E
@@ -342,15 +351,16 @@ size_t PackSet::MonteCarloA(size_t num, double delta, double beta) {
 }
 
 double PackSet::MinMaxRadius(size_t k, double eps) {
+  NormalDistribution<double> normal;
   double s0 = MinDistance(k) * 0.5;
   double res = 0;
   vector<Quaternion> boundary;
   for (size_t n = 0; n < 12; ++n) {
     double s = s0;
     Quaternion  qq(1,
-		   s * Random::Global.Normal<double>(),
-		   s * Random::Global.Normal<double>(),
-		   s * Random::Global.Normal<double>());
+		   s * normal(Random::Global),
+		   s * normal(Random::Global),
+		   s * normal(Random::Global));
     qq *= m_set[k];
     qq.Normalize();
     double d = Dist(Closeness(qq, m_set[FindClosest(qq)]));
@@ -360,9 +370,9 @@ double PackSet::MinMaxRadius(size_t k, double eps) {
     while (true) {
       iter++;
       Quaternion nq(1,
-		    s * Random::Global.Normal<double>(),
-		    s * Random::Global.Normal<double>(),
-		    s * Random::Global.Normal<double>());
+		    s * normal(Random::Global),
+		    s * normal(Random::Global),
+		    s * normal(Random::Global));
       nq *= qq;
       nq.Normalize();
       double nd = Dist(Closeness(nq, m_set[FindClosest(nq)]));
@@ -387,9 +397,9 @@ double PackSet::MinMaxRadius(size_t k, double eps) {
   double s = s0 * 0.1;
   for (size_t n = 0; n < 100; ++n) {
     Quaternion qq(1,
-		   s * Random::Global.Normal<double>(),
-		   s * Random::Global.Normal<double>(),
-		   s * Random::Global.Normal<double>());
+		   s * normal(Random::Global),
+		   s * normal(Random::Global),
+		   s * normal(Random::Global));
     qq *= m_set[k];
     qq.Normalize();
     double nsep = 0;

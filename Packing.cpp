@@ -1,10 +1,12 @@
 #include "PackSet.h"
-#include "Random.hpp"
+#include "RandomLib/Random.hpp"
+#include "RandomLib/NormalDistribution.hpp"
 #include <iostream>
 #include <cmath>
 #include <iomanip>
 
 using namespace std;
+using namespace RandomLib;
 
 #define phi0 ((sqrt(5.0)-1)/2)
 #define phi1 ((sqrt(5.0)+1)/2)
@@ -821,7 +823,7 @@ static size_t zcw[9][4] = {
 double pind(double ind, double delta) {
   const double s = 1.86; // sqrt(3.0); // 1.86; //sqrt(3.5);
   ind *= delta;
-  switch (10) {
+  switch (0) {
   case 0:
     return sinh(s * ind)/s;
     break;
@@ -994,6 +996,7 @@ void VolCell48(double delta, double rad, size_t res) {
   double uniform = 4.0 * M_PI/3.0 / (24 * num);
   double vsum = 0;
   bool docomp = false;
+  NormalDistribution<double> normal;
   if (!docomp) {
     cout << "i=0;";
     cout << "uniform=4*pi/3/" << 24*num << ";" << endl;
@@ -1020,10 +1023,10 @@ void VolCell48(double delta, double rad, size_t res) {
     double vv = 0;
     double maxrad = 0;
     for (size_t j = 0; j < (docomp ? mult : 1); ++j) {
-      Quaternion tx(Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>());
+      Quaternion tx(normal(Random::Global),
+		    normal(Random::Global),
+		    normal(Random::Global),
+		    normal(Random::Global));
       tx.Normalize();
       tx = Quaternion(1,0,0,0);
       double maxrad1;
@@ -1051,6 +1054,7 @@ void VolCell48(double delta, double rad, size_t res) {
 void VolCellVEC(double rad, size_t res) {
   size_t num;
   PackSet s;
+  NormalDistribution<double> normal;
   AddV(s);
   AddE(s);
   AddC(s);
@@ -1082,10 +1086,10 @@ void VolCellVEC(double rad, size_t res) {
     double vv = 0;
     double maxrad = 0;
     for (size_t j = 0; j < mult; ++j) {
-      Quaternion tx(Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>());
+      Quaternion tx(normal(Random::Global),
+		    normal(Random::Global),
+		    normal(Random::Global),
+		    normal(Random::Global));
       tx.Normalize();
       double maxrad1;
       double v = s.Volume(k, rad, res, maxrad1, tx) / uniform;
@@ -1106,6 +1110,7 @@ void VolCellVEC(double rad, size_t res) {
 void VolCellVC(double rad, size_t res) {
   size_t num;
   PackSet s;
+  NormalDistribution<double> normal;
   AddV(s);
   AddC(s);
   num = s.Number();
@@ -1124,10 +1129,10 @@ void VolCellVC(double rad, size_t res) {
     double vv = 0;
     double maxrad = 0;
     for (size_t j = 0; j < mult; ++j) {
-      Quaternion tx(Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>());
+      Quaternion tx(normal(Random::Global),
+		    normal(Random::Global),
+		    normal(Random::Global),
+		    normal(Random::Global));
       tx.Normalize();
       double maxrad1;
       double v = s.Volume(k, rad, res, maxrad1, tx) / uniform;
@@ -1166,10 +1171,10 @@ double MaxRadiusCell(const PackSet& s, double delta, size_t num) {
     }
 #if 0
   while (count < num) {
-    double w = Random::Global.Normal<double>(),
-      x = Random::Global.Normal<double>()/w,
-      y = Random::Global.Normal<double>()/w,
-      z = Random::Global.Normal<double>()/w;
+    double w = normal(Random::Global),
+      x = normal(Random::Global)/w,
+      y = normal(Random::Global)/w,
+      z = normal(Random::Global)/w;
     if (abs(x) > sqrt(2.0) - 1 ||
 	abs(y) > sqrt(2.0) - 1 ||
 	abs(z) > sqrt(2.0) - 1 ||
@@ -1232,6 +1237,7 @@ int main(int argc, char* argv[], char*[]) {
 
   Random::Global.Reseed();
   cout << "Seed set to: " << Random::Global.SeedString() << endl;
+  NormalDistribution<double> normal;
   bool docell600 = false;
   bool dovolumes = true;
   if (1) {
@@ -1262,10 +1268,10 @@ int main(int argc, char* argv[], char*[]) {
       //VolCellVC(rad, 500);
       exit(0);
 
-      Quaternion tx(Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>(),
-		    Random::Global.Normal<double>());
+      Quaternion tx(normal(Random::Global),
+		    normal(Random::Global),
+		    normal(Random::Global),
+		    normal(Random::Global));
       tx.Normalize();
       {
 	PackSet s;
@@ -1328,10 +1334,10 @@ int main(int argc, char* argv[], char*[]) {
   //  Quaternion pre(1,2,0.5,-1.2);
   //  Quaternion post(0.3,-0.5,0.8,0.7);
 
-  bool dozcw = true, coverageradius = true;
-  size_t indmin = 0, indmax = 8;
-  // bool dozcw = false, coverageradius = true;
-  // size_t indmin = 0, indmax = 0;
+  // bool dozcw = true, coverageradius = true;
+  // size_t indmin = 0, indmax = 8;
+  bool dozcw = false, coverageradius = true;
+  size_t indmin = 0, indmax = 0;
 
   for (size_t ind = indmin; ind <= indmax; ++ind) {
     PackSet s; // (pre,post);
@@ -1382,10 +1388,10 @@ int main(int argc, char* argv[], char*[]) {
     if (coverageradius)
       if (1)
 	cout << "N = " << s.Number() << " Radius = "
-	     << s.MaxRadius(Quaternion(Random::Global.Normal<double>(),
-				       Random::Global.Normal<double>(),
-				       Random::Global.Normal<double>(),
-				       Random::Global.Normal<double>()),
+	     << s.MaxRadius(Quaternion(normal(Random::Global),
+				       normal(Random::Global),
+				       normal(Random::Global),
+				       normal(Random::Global)),
 			    2, 5000000) << endl;
       else
 	cout << "N = " << s.Number() << " Radius = "
