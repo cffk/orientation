@@ -1,6 +1,5 @@
 # Orientation set c600vec, number = 720, radius = 22.25 degrees
-# $Id$
-# For more information, eee http://charles.karney.info/orientation/
+# For more information, see https://github.com/cffk/orientation
 format euler
 720 22.25 2.22117
 -0.000000000  0.000000000  0.000000000 1.551267

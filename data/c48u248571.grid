@@ -1,6 +1,5 @@
 # Orientation set c48u248571, number = 5965704, radius = 1.056 degrees
-# $Id$
-# For more information, See http://charles.karney.info/orientation/
+# For more information, See https://github.com/cffk/orientation
 format grid
 0.016488 0.00 5965704 248571 5952  1.056  1.98203
  0  0  0  1.3543437   1.056   1

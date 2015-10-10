@@ -6,7 +6,7 @@
 //
 // For more information, see
 //
-//    http://charles.karney.info/orientation/
+//    https://github.com/cffk/orientation
 //
 // Compile with, e.g.,
 //
@@ -58,10 +58,7 @@
 #include <iomanip>
 #include <cmath>
 #include <string>
-
-namespace {
-  char rcsid[] = "$Id$";
-}
+#include <limits>
 
 // Windows doesn't define M_PI in the standard header?
 #if !defined(M_PI)
