@@ -7,10 +7,10 @@ Version 1.1 (with minor revisions), October 12, 2015
 ## Introduction
 
 <p>
-Here we give various sets of orientations with cover orientation space
+Here we give various sets of orientations which cover orientation space
 nearly optimally.  These are suitable for searching orientation space
 and for integrating over orientation (together with the provided
-weights).  The background to this work is given in
+weights).  The background to this work is given in Section 8 of
 <blockquote>
 Charles F. F. Karney,<br>
 <a href="http://dx.doi.org/10.1016/j.jmgm.2006.04.002"><i>Quaternions
@@ -45,9 +45,9 @@ set, <b>q</b><sub><i>i</i></sub>, all orientations for which
 relative weight of <b>q</b><sub><i>i</i></sub> as
 <blockquote>
     <i>w</i><sub><i>i</i></sub> =
-    <i>N</i>(volume of Voronoi cell <i>i</i>)/(volume of orientation space)
+    <i>N</i> (volume of Voronoi cell <i>i</i>&thinsp;) / (volume of orientation space)
 </blockquote>
-We can approximate an orientational average of <i>f</i>(<b>q</b>) with
+We can approximate an orientational average of <i>f</i>&thinsp;(<b>q</b>) with
 <blockquote>
     &langle;<i>f</i>&thinsp;&rangle; =
     &sum;<sub><i>i</i></sub> <i>w</i><sub><i>i</i></sub>
@@ -60,15 +60,15 @@ an optimal set of orientations.
 <p>
 Expressing the orientation as a unit quaternion or a pair of opposite
 points on S<sup>3</sup>, we see that this problem is just a 4-dimensional
-generalization of the &ldquo;Spherical Covering&rdquo; problem.  See
+generalization of the &ldquo;spherical covering&rdquo; problem.  See
 <blockquote>
     R. H. Hardin, N. J. A. Sloane, and W. D. Smith,<br>
-    <a href="http://neilsloane.com/coverings/"><i>Spherical Coverings</i></a>,
-    (Feb. 1984).</a>
+    <a href="http://neilsloane.com/coverings/"><i>Spherical coverings</i></a>,
+    (Feb. 1984),</a>
 </blockquote>
 with the additional constraint that the points come as opposite pairs.
 The formula for <i>c</i> above involves the &ldquo;area&rdquo; of a
-spherical cap on S<sup>3</sup> or radius &alpha;/2.
+spherical cap on S<sup>3</sup> of radius &alpha;/2.
 A quaternion [<i>q</i><sub>0</sub>, <i>q</i><sub>1</sub>,
 <i>q</i><sub>2</sub>, <i>q</i><sub>3</sub>] represents the rotation give
 by the matrix whose components are
@@ -97,8 +97,8 @@ The problem of determining good orientation sets for the purposes of
 averaging is discussed in
 <blockquote>
 M. Ed&eacute;n and M. H. Levitt,<br>
-<a href="http://dx.doi.org/10.1006/jmre.1998.1427"><i>Computation of Orientational
-Averages in Solid State NMR by Gaussian Spherical Quadrature</i></a>,<br>
+<a href="http://dx.doi.org/10.1006/jmre.1998.1427"><i>Computation of orientational
+averages in solid state NMR by Gaussian spherical quadrature</i></a>,<br>
 J. Magn. Reson. <b>132</b>, 220&ndash;239 (1998).<br>
 </blockquote>
 
@@ -107,7 +107,7 @@ J. Magn. Reson. <b>132</b>, 220&ndash;239 (1998).<br>
 <p>
 Because determining optimal sets of points is a hard problem, we provide
 here &ldquo;nearly&rdquo; optimal sets of points.  We begin by providing
-a table of the orientation sets ranking by decreasing &alpha;.
+a table of the orientation sets ranked by decreasing &alpha;.
 
 <p>
 <center>
@@ -417,7 +417,7 @@ a table of the orientation sets ranking by decreasing &alpha;.
 <p>
 The orientation sets can be downloaded by the links in the
 &ldquo;download&rdquo; column.  The &ldquo;quat&rdquo; and
-&ldquo;euler&rdquo; links are in the following format:
+&ldquo;euler&rdquo; files are in the following format:
 <ul>
 <li>Any number of initial comment lines beginning with &ldquo;#&rdquo;.
 <li>A line containing either &ldquo;format quaternion&rdquo; or
@@ -435,8 +435,10 @@ The orientation sets can be downloaded by the links in the
     <i>g</i><sub><i>i</i></sub>
     <i>w</i><sub><i>i</i></sub> (for Euler angles).
 </ul>
-The convention for Euler angles is <i>R</i><sub><i>z</i></sub>(<i>a</i>)
-<i>R</i><sub><i>y</i></sub>(<i>b</i>) <i>R</i><sub><i>z</i></sub>(<i>g</i>).
+The convention for Euler angles is that the rotation is given by
+<i>R</i><sub><i>z</i></sub>(<i>a</i>)
+<i>R</i><sub><i>y</i></sub>(<i>b</i>)
+<i>R</i><sub><i>z</i></sub>(<i>g</i>).
 
 <p>
 The &ldquo;grid&rdquo; links provide a compact representation for those
@@ -506,7 +508,8 @@ multiple points with the cells of a polytope.  The 48-cell is
 convenient for this purpose.  The cells are all identical truncated
 cubes and thus a body-center-cubic lattice lines up nicely with the
 cells.  [A body-center-cubic lattice provides the thinnest covering of
-R<sup>3</sup>, Bambah (1954).]
+R<sup>3</sup>; see R. P. Bambah, <i>On lattice coverings by spheres</i>,
+Proc. Nat. Inst. Sci. India <b>20</b>, 25&ndash;52 (1954).]
 
 <p>
 Here is the procedure.  Each cell of the 48-cell is a truncated cube.
@@ -553,7 +556,7 @@ One possibility is to use a non-uniform lattice spacing using
    <i>p</i><sub>1</sub> = sinh(&sigma; <i>k</i> &delta;/2)/&sigma;,
 </blockquote>
 and similarly for <i>p</i><sub>2</sub> and <i>p</i><sub>3</sub>.
-(The uniform lattice is recovered in the limit &sigma; = 0.)  The
+(The uniform lattice is recovered in the limit &sigma; &rarr; 0.)  The
 increasing lattice spacing afforded by the sinh function counteracts
 the bunching of points occurring when the lattice points are projected
 onto S<sup>3</sup>.)  The two sets c48n309 and c48n527 are two examples
@@ -561,7 +564,7 @@ with reasonably thin coverage.  In the case of c48n9, &sigma; is used
 merely to delay the entry of a new set of points into the primary cell.
 
 <p>
-One might also offset the lattice and remove or perturb the points here
+One might also offset the lattice and remove or perturb the points near
 the surface of the cells.  However because these strategies make the
 search for good sets considerably more complex, the simple procedure
 with the uniform lattice outlined above probably suffices for most
@@ -592,7 +595,7 @@ compact represtentation of the orientation set with a file in the
 </ul>
 where <i>N</i><sub><i>d</i></sub> is the number of distinct entries,
 <i>r</i><sub><i>i</i></sub> is the radius of the
-<i>i</i>th Voronoi cell [thus &alpha; =
+<i>i</i>&thinsp;th Voronoi cell [thus &alpha; =
 max<sub><i>i</i></sub>(<i>r</i><sub><i>i</i></sub>)], and
 <i>M</i><sub><i>i</i></sub> is the multiplicity of the entry.  In the
 file, we restrict <i>k</i><sub><i>i</i></sub> &ge;
@@ -609,6 +612,8 @@ code, you can generate a quaternion orientation set with, e.g.,
 <blockquote>
    ./ExpandSet &lt; c48u527.grid &gt; c48u527.quat
 </blockquote>
+Supply the &ldquo;-e&rdquo; option to obtain the corresponding file of
+Euler angles.
 
 <p>
 Additional denser orientation sets are provided below.  Because these
@@ -622,7 +627,7 @@ For each set, can obtain new sets by performing an arbitrary rotation of
 R<sup>4</sup> via
 <blockquote>
     <b>q</b><sub><i>i</i></sub>&prime; =
-    <b>r</b> <b>q</b><sub><i>i</i></sub> <b>s</b>
+    <b>r</b> <b>q</b><sub><i>i</i></sub> <b>s</b>,
 </blockquote>
 where <b>r</b> and <b>s</b> are fixed (possibly random) unit
 quaternions.  The pre- and post-multiplication allows all rotations of
@@ -660,7 +665,7 @@ Estimated accuracy (ulp = units in last place):
 ## ZCW3 Orientation Sets
 
 <p>
-M. Ed&eacute;n and M. H. Levitt studied the ZCW3 orientation sets.
+Ed&eacute;n and Levitt studied the ZCW3 orientation sets.
 These are based on gridding the space of Euler angles.  These yield
 less thin coverings of orientation space that the sets given above.
 Here is the data
@@ -1348,18 +1353,18 @@ results for uniform grids (&sigma; = 0):
 
 <p>
 As before, <a href="ExpandSet.cpp">ExpandSet.cpp</a> can be used to
-expand the grids into sets of quaternions.  The computation of the
-weights in these high density grid files is carried out by determining
-the volume of the Voronoi cells in axis-angle space.  Some corrections
-are applied to account for the fact that orientation space is not flat
-and the resulting maximum error in the weights is approximately
-(&delta;/12)<sup>2</sup>.
+expand the grids into sets of quaternions or Euler angles.  The
+computation of the weights in these high density grid files is carried
+out by determining the volume of the Voronoi cells in axis-angle space.
+Some corrections are applied to account for the fact that orientation
+space is not flat and the resulting maximum error in the weights is
+approximately (&delta;/12)<sup>2</sup>.
 
 <p>
 The column labeled &ldquo;approx &delta;&rdquo; illustrates that the
 optimal grid spacing follow one of three patterns (here <i>s</i> =
 &radic;2 &minus; 1).   This follows from the requirement that the
-separation of the lattice planes one set of faces (triangles or
+separation of the lattice planes at one set of faces (triangles or
 octogons) be such that the maximum Voronoi radius of points near this
 face match that of the point at the center of the cell.  At the same
 time, the separation of the lattice planes at the other set of faces
